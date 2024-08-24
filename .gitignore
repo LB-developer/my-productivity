@@ -32,3 +32,6 @@ db/*.db
 
 # Log files
 *.log
+
+# Temp files
+*.tmp
