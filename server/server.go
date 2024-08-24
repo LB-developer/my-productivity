@@ -1,12 +1,12 @@
 package server
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 )
 
 func StartServer() {
-	SetupRoutes()
-	log.Println("Server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r := SetupRoutes()
+	fmt.Println("Starting Server 8080")
+  http.ListenAndServe(":8080", r)
 }

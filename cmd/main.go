@@ -6,7 +6,8 @@ import (
 
 
 func main() {
-	Seed()
+	// Seed()
+	
 	server.StartServer()
 }
 
