@@ -20,6 +20,6 @@ type PersonalInfo struct {
 	GithubLink 		  string `json:"github_acc_link"`
 	LinkedInLink 		string `json:"linkedin_link"`
 	Email     		  string `json:"email_link"`
-	Picture  				string `json:"image_url"`
+	Picture  				string `json:"picture_url"`
 	FavTechnologies string `json:"fav_technologies"`
 }
