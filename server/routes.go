@@ -20,5 +20,6 @@ func SetupRoutes() *chi.Mux {
 }))
 
 	router.Get("/api/v1/projects", serverapi.GetProjectsHandler)
+	router.Get("/api/v1/about-me", serverapi.GetAboutMeHandler)
 	return router
 }

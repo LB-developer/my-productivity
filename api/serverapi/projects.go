@@ -29,7 +29,15 @@ func GetProjectsHandler(res http.ResponseWriter, req *http.Request) {
 
 	for rows.Next() {
 		var project Project
-		if err := rows.Scan(&project.ID, &project.Name, &project.Description, &project.Technologies, &project.GithubLink, &project.DemoLink, &project.ImageURL, &project.Status); err != nil {
+		if err := rows.Scan(
+			&project.ID, 
+			&project.Name, 
+			&project.Description, 
+			&project.Technologies, 
+			&project.GithubLink, 
+			&project.DemoLink, 
+			&project.ImageURL, 
+			&project.Status); err != nil {
 			fmt.Printf("projects %q: %v", project.Name, err)
 		}
 		projects = append(projects, project)
