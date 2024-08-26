@@ -1,6 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchAboutMe } from '../../api/clientapi/get'
 
+const inputFields = {
+  Name: 'first_name',
+  Role: 'role',
+  Location: 'location',
+  Email: 'email_link',
+  Github: 'github_acc_link',
+  LinkedIn: 'linkedin_link',
+  Picture: 'picture_url',
+}
+
 export default function AboutMe() {
   const {
     data: aboutMeData,
@@ -21,21 +31,34 @@ export default function AboutMe() {
     return <p>There was an error, please check the console for more info</p>
   }
 
-  if (aboutMeData) {
-    return (
-      <>
-        <div>
-          <p>{aboutMeData.first_name}</p>
-          <p>{aboutMeData.last_name}</p>
-          <p>{aboutMeData.role}</p>
-          <p>{aboutMeData.location}</p>
-          <p>{aboutMeData.email_link}</p>
-          <p>{aboutMeData.github_acc_link}</p>
-          <p>{aboutMeData.linkedin_link}</p>
-          <p>{aboutMeData.picture_url}</p>
-          <p>{aboutMeData.fav_technologies}</p>
+  type AboutMeKey = keyof typeof aboutMeData
+  const createInputFields = (): JSX.Element[] | undefined => {
+    if (aboutMeData)
+      return Object.entries(inputFields).map((infoEl, index) => (
+        <div key={`about-me-div ${index}`}>
+          <p key={`about-me-p ${index}`}>{infoEl[0]}</p>
+          <input
+            type="text"
+            name={infoEl[0]}
+            key={`about-me-input ${index}`}
+            defaultValue={aboutMeData[infoEl[1] as AboutMeKey]}
+          />
         </div>
-      </>
-    )
+      ))
+  }
+
+  const handleRenderForm = () => {
+    if (aboutMeData)
+      return (
+        <form>
+          <fieldset>
+            <label>{createInputFields()}</label>
+          </fieldset>
+        </form>
+      )
+  }
+
+  {
+    return <>{handleRenderForm()}</>
   }
 }
