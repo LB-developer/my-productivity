@@ -28,7 +28,7 @@ export async function fetchAboutMe(): Promise<PersonalInfo> {
   if (!res.ok || !contentType?.includes('application/json')) {
     const err = await res.text()
     console.error('Error:', err)
-    throw new Error('Failed to fetch projects. Response was not JSON.')
+    throw new Error('Failed to fetch info. Response was not JSON.')
   }
 
   return res.json()
