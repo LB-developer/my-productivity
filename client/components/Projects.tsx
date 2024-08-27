@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchProjects } from '../../api/clientapi/get'
-import { Project } from '../types/portfolio.type'
+import { fetchProjects } from '../../api/clientapi/projects'
+import { Project } from '../models/portfolio.type'
 
 export default function Projects() {
   const {

@@ -1,6 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { fetchAboutMe, updateAboutMe } from '../../api/clientapi/aboutme'
 import { PersonalInfo } from '../models/portfolio.type'
+import { useGetAboutMe, useUpdateAboutMe } from '../hooks/index'
 
 const renderedInputFields = {
   Name: 'Name',
@@ -13,23 +12,8 @@ const renderedInputFields = {
 }
 
 export default function AboutMe() {
-  const {
-    data: aboutMeData,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ['about-me-info'],
-    queryFn: fetchAboutMe,
-  })
-
-  const queryClient = useQueryClient()
-  const mutation = useMutation({
-    mutationFn: updateAboutMe,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['about-me-info'] })
-    },
-  })
+  const { data: aboutMeData, isLoading, isError, error } = useGetAboutMe()
+  const patchMutation = useUpdateAboutMe()
 
   type PersonalInfoKey = keyof PersonalInfo
   const handleSubmitChanges = async (
@@ -46,7 +30,7 @@ export default function AboutMe() {
         updatedInfo[typedKey] = value as never
       }
     }
-    mutation.mutateAsync(updatedInfo)
+    patchMutation.mutateAsync(updatedInfo)
   }
 
   type AboutMeKey = keyof typeof aboutMeData
