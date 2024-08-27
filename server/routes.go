@@ -12,14 +12,15 @@ func SetupRoutes() *chi.Mux {
 
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300, 
 }))
-
+	
 	router.Get("/api/v1/projects", serverapi.GetProjectsHandler)
 	router.Get("/api/v1/about-me", serverapi.GetAboutMeHandler)
+	router.Patch("/api/v1/about-me", serverapi.UpdateAboutMeHandler)
 	return router
 }

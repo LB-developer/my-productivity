@@ -11,10 +11,10 @@ export interface Project {
 
 export interface PersonalInfo {
   id: number
-  first_name: string
+  Name: string
   last_name: string
-  role: string
-  location: string
+  Role: string
+  Location: string
   github_acc_link: string
   linkedin_link: string
   email_link: string

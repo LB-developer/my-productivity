@@ -1,14 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
-import { fetchAboutMe } from '../../api/clientapi/get'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fetchAboutMe, updateAboutMe } from '../../api/clientapi/aboutme'
+import { PersonalInfo } from '../models/portfolio.type'
 
-const inputFields = {
-  Name: 'first_name',
-  Role: 'role',
-  Location: 'location',
-  Email: 'email_link',
-  Github: 'github_acc_link',
-  LinkedIn: 'linkedin_link',
-  Picture: 'picture_url',
+const renderedInputFields = {
+  Name: 'Name',
+  Role: 'Role',
+  Location: 'Location',
+  Email: 'Email',
+  Github: 'Github',
+  Linkedin: 'Linkedin',
+  Picture: 'Picture',
 }
 
 export default function AboutMe() {
@@ -22,19 +23,36 @@ export default function AboutMe() {
     queryFn: fetchAboutMe,
   })
 
-  if (isLoading) {
-    return <p>Loading About Me...</p>
-  }
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: updateAboutMe,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['about-me-info'] })
+    },
+  })
 
-  if (isError) {
-    console.error(error)
-    return <p>There was an error, please check the console for more info</p>
+  type PersonalInfoKey = keyof PersonalInfo
+  const handleSubmitChanges = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault()
+
+    const updatedInfo: PersonalInfo = {} as PersonalInfo
+    const formData = new FormData(event.currentTarget)
+
+    for (const [key, value] of formData.entries()) {
+      const typedKey = key as PersonalInfoKey
+      if (typeof value === 'string') {
+        updatedInfo[typedKey] = value as never
+      }
+    }
+    mutation.mutateAsync(updatedInfo)
   }
 
   type AboutMeKey = keyof typeof aboutMeData
   const createInputFields = (): JSX.Element[] | undefined => {
     if (aboutMeData)
-      return Object.entries(inputFields).map((infoEl, index) => (
+      return Object.entries(renderedInputFields).map((infoEl, index) => (
         <div key={`about-me-div ${index}`}>
           <p key={`about-me-p ${index}`}>{infoEl[0]}</p>
           <input
@@ -48,14 +66,23 @@ export default function AboutMe() {
   }
 
   const handleRenderForm = () => {
-    if (aboutMeData)
-      return (
-        <form>
-          <fieldset>
-            <label>{createInputFields()}</label>
-          </fieldset>
-        </form>
-      )
+    return (
+      <form onSubmit={(e) => handleSubmitChanges(e)}>
+        <fieldset>
+          <label>{createInputFields()}</label>
+          <button type="submit">Submit Changes</button>
+        </fieldset>
+      </form>
+    )
+  }
+
+  if (isLoading) {
+    return <p>Loading About Me...</p>
+  }
+
+  if (isError) {
+    console.error(error)
+    return <p>There was an error, please check the console for more info</p>
   }
 
   {

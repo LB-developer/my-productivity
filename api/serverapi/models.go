@@ -13,13 +13,25 @@ type Project struct {
 
 type PersonalInfo struct {
 	ID         		  int    `json:"id"`
-	FirstName  		  string `json:"first_name"`
-	LastName   		  string `json:"last_name"`
-	Role		  		  string `json:"role"`
-	Location  		  string `json:"location"`
-	GithubLink 		  string `json:"github_acc_link"`
-	LinkedInLink 		string `json:"linkedin_link"`
-	Email     		  string `json:"email_link"`
-	Picture  				string `json:"picture_url"`
-	FavTechnologies string `json:"fav_technologies"`
+	Name  		  string `json:"Name"`
+	LastName   		  string `json:"Last_name"`
+	Role		  		  string `json:"Role"`
+	Location  		  string `json:"Location"`
+	Github 		  string `json:"Github"`
+	Linkedin 		string `json:"Linkedin"`
+	Email     		  string `json:"Email"`
+	Picture  				string `json:"Picture"`
+	FavTechnologies string `json:"Fav_technologies"`
+}
+
+type PersonalInfoWithoutId struct {
+	Name	 		  string 
+	Last_name   string 
+	Role		  	string 
+	Location  	string 
+	Github 			string 
+	Linkedin 		string 
+	Email     	string 
+	Picture  		string 
+	Technologies   string 
 }
