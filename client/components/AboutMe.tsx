@@ -1,75 +1,67 @@
-import { PersonalInfo } from '../models/portfolio.type'
-import { useGetAboutMe, useUpdateAboutMe } from '../hooks/index'
-
-const renderedInputFields = {
-  Name: 'Name',
-  Role: 'Role',
-  Location: 'Location',
-  Email: 'Email',
-  Github: 'Github',
-  Linkedin: 'Linkedin',
-  Picture: 'Picture',
-}
+import { useGetAboutMe } from '../hooks/index'
 
 export default function AboutMe() {
-  const { data: aboutMeData, isLoading, isError, error } = useGetAboutMe()
-  const patchMutation = useUpdateAboutMe()
-
-  type PersonalInfoKey = keyof PersonalInfo
-  const handleSubmitChanges = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault()
-
-    const updatedInfo: PersonalInfo = {} as PersonalInfo
-    const formData = new FormData(event.currentTarget)
-
-    for (const [key, value] of formData.entries()) {
-      const typedKey = key as PersonalInfoKey
-      if (typeof value === 'string') {
-        updatedInfo[typedKey] = value as never
-      }
-    }
-    patchMutation.mutateAsync(updatedInfo)
-  }
-
-  type AboutMeKey = keyof typeof aboutMeData
-  const createInputFields = (): JSX.Element[] | undefined => {
-    if (aboutMeData)
-      return Object.entries(renderedInputFields).map((infoEl, index) => (
-        <div key={`about-me-div ${index}`}>
-          <p key={`about-me-p ${index}`}>{infoEl[0]}</p>
-          <input
-            type="text"
-            name={infoEl[0]}
-            key={`about-me-input ${index}`}
-            defaultValue={aboutMeData[infoEl[1] as AboutMeKey]}
-          />
-        </div>
-      ))
-  }
-
-  const handleRenderForm = () => {
-    return (
-      <form onSubmit={(e) => handleSubmitChanges(e)}>
-        <fieldset>
-          <label>{createInputFields()}</label>
-          <button type="submit">Submit Changes</button>
-        </fieldset>
-      </form>
-    )
-  }
+  const { data: aboutMeData, isLoading, isError, error: err } = useGetAboutMe()
 
   if (isLoading) {
-    return <p>Loading About Me...</p>
+    return <p>Loading...</p>
   }
 
   if (isError) {
-    console.error(error)
+    console.error(err)
     return <p>There was an error, please check the console for more info</p>
   }
 
-  {
-    return <>{handleRenderForm()}</>
-  }
+  if (aboutMeData)
+    return (
+      <section className="about-me">
+        <div className="about-me__container">
+          {/* Profile Picture */}
+          <div className="about-me__profile-picture">
+            <img
+              src={aboutMeData.picture_url}
+              alt={`Profile Picture of ${aboutMeData.Name}`}
+              className="about-me__profile-img"
+            />
+          </div>
+
+          {/* Text Content */}
+          <div className="about-me__content">
+            <header className="about-me__header">
+              <h1 className="about-me__name">{aboutMeData.Name}</h1>
+              <h2 className="about-me__role">{aboutMeData.Role}</h2>
+            </header>
+            <p className="about-me__location">
+              Location: {aboutMeData.Location}
+            </p>
+
+            {/* Contact Information */}
+            <div className="about-me__contacts">
+              <a
+                href={`mailto:${aboutMeData.email_link}`}
+                className="about-me__contact-link"
+              >
+                Email
+              </a>
+              <a
+                href={aboutMeData.github_acc_link}
+                className="about-me__contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+              <a
+                href={aboutMeData.linkedin_link}
+                className="about-me__contact-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
 }
