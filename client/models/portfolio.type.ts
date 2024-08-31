@@ -15,9 +15,9 @@ export interface PersonalInfo {
   last_name: string
   Role: string
   Location: string
-  github_acc_link: string
+  Github: string
   linkedin_link: string
-  email_link: string
-  picture_url: string
+  Email: string
+  Picture: string
   fav_technologies: string
 }

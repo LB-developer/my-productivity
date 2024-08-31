@@ -38,9 +38,12 @@ export default function EditAboutMe() {
   const createInputFields = (): JSX.Element[] | undefined => {
     if (aboutMeData)
       return Object.entries(renderedInputFields).map((infoEl, index) => (
-        <div key={`about-me-div ${index}`}>
-          <p key={`about-me-p ${index}`}>{infoEl[0]}</p>
+        <div className="about-me-form-group" key={`about-me-div ${index}`}>
+          <p className="about-me-form-title" key={`about-me-p ${index}`}>
+            {infoEl[0]}
+          </p>
           <input
+            className="about-me-form-input"
             type="text"
             name={infoEl[0]}
             key={`about-me-input ${index}`}
