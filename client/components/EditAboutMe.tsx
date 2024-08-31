@@ -1,6 +1,7 @@
 import { PersonalInfo } from '../models/portfolio.type'
 import { useGetAboutMe, useUpdateAboutMe } from '../hooks/index'
 import React from 'react'
+import SearchTechnologies from './SearchTechnologies'
 
 const renderedInputFields = {
   Name: 'Name',
@@ -17,9 +18,7 @@ export default function EditAboutMe() {
   const patchMutation = useUpdateAboutMe()
 
   type PersonalInfoKey = keyof PersonalInfo
-  const handleSubmitChanges = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmitChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const updatedInfo: PersonalInfo = {} as PersonalInfo
@@ -55,12 +54,16 @@ export default function EditAboutMe() {
 
   const handleRenderForm = () => {
     return (
-      <form onSubmit={(e) => handleSubmitChanges(e)}>
-        <fieldset>
-          <label>{createInputFields()}</label>
-          <button type="submit">Submit Changes</button>
-        </fieldset>
-      </form>
+      <>
+        <form onSubmit={async (e) => await handleSubmitChanges(e)}>
+          <fieldset className="about-me-form-fieldset">
+            <label>{createInputFields()}</label>
+            <button className="button-10" type="submit">
+              Submit Changes
+            </button>
+          </fieldset>
+        </form>
+      </>
     )
   }
 
@@ -74,6 +77,12 @@ export default function EditAboutMe() {
   }
 
   {
-    return <>{handleRenderForm()}</>
+    return (
+      <div className="edit-about-me-container">
+        <h1 className="edit-about-me-heading">Edit About Me</h1>
+        {handleRenderForm()}
+        <SearchTechnologies />
+      </div>
+    )
   }
 }

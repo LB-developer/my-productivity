@@ -13,12 +13,12 @@ func GetAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 
 	db, err := sql.Open("sqlite3", "server/db/test_database.db")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 
 	rows, err := db.Query("SELECT * FROM info")
 	if err != nil {
-		log.Fatalf("Could not query db_table: %s\n %v","info", err)
+		log.Printf("Could not query db_table: %s\n %v","info", err)
 	}
 	defer rows.Close()
 	
@@ -39,7 +39,10 @@ func GetAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 			}
 	}
 	res.Header().Set("Content-Type", "application/json")
-  json.NewEncoder(res).Encode(aboutMe)
+  err = json.NewEncoder(res).Encode(aboutMe)
+	if err != nil {
+		http.Error(res, "Failed to encode JSON", http.StatusInternalServerError)
+	}
 }
 
 func UpdateAboutMeHandler(res http.ResponseWriter, req *http.Request) {
@@ -77,12 +80,49 @@ func UpdateAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	
 }
 
+func fetchTechnologies() (Technologies, error) {
+		resp, err := http.Get("https://raw.githubusercontent.com/devicons/devicon/master/devicon.json")
+    if err != nil {
+        log.Printf("Failed to fetch icons: %v", err) // Log exact error
+        return nil, fmt.Errorf("failed to fetch icons: %w", err)
+    }
+    defer resp.Body.Close()
 
+    if resp.StatusCode != http.StatusOK {
+        log.Printf("Unexpected response status: %s", resp.Status)
+        return nil, fmt.Errorf("unexpected response status: %s", resp.Status)
+    }
 
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        log.Printf("Failed to read response body: %v", err)
+        return nil, fmt.Errorf("failed to read response body: %w", err)
+    }
 
+    var icons Technologies
+    err = json.Unmarshal(body, &icons)
+    if err != nil {
+        log.Printf("Failed to parse JSON: %v", err)
+        return nil, fmt.Errorf("failed to parse JSON: %w", err)
+    }
+
+    return icons, nil
+}
+
+func GetTechnologiesHandler(res http.ResponseWriter, req *http.Request) {
+	icons, err := fetchTechnologies()
+	if err != nil {
+		http.Error(res, "Failed to fetch technologies", http.StatusInternalServerError)
+		return
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(res).Encode(icons)
+	if err != nil {
+		http.Error(res, "Failed to encode JSON", http.StatusInternalServerError)
+	}
+}
 
 
