@@ -20,6 +20,7 @@ func Seed() {
 	seedFiles := []string{
 		"server/db/seed/001_seed_initial_test_data.sql",
 		"server/db/seed/002_seed_initial_test_info_data.sql",
+		"server/db/seed/003_seed_initial_technologies_data.sql",
 	}
 
 	for _, seedFile := range seedFiles {

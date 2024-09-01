@@ -12,12 +12,10 @@ export interface Project {
 export interface PersonalInfo {
   id: number
   Name: string
-  last_name: string
   Role: string
   Location: string
   Github: string
-  linkedin_link: string
+  Linkedin: string
   Email: string
   Picture: string
-  fav_technologies: string
 }

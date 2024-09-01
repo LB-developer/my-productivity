@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS technologies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  technology TEXT
+)

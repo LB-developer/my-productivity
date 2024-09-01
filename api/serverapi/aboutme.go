@@ -27,14 +27,12 @@ func GetAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 		if err := rows.Scan(
 			&aboutMe.ID, 
 			&aboutMe.Name, 
-			&aboutMe.LastName,
 			&aboutMe.Role,
 			&aboutMe.Location,
 			&aboutMe.Github,
 			&aboutMe.Linkedin,
 			&aboutMe.Email,
-			&aboutMe.Picture,
-			&aboutMe.FavTechnologies); err != nil {
+			&aboutMe.Picture); err != nil {
 				fmt.Printf("info %q: %v", aboutMe.Name, err)
 			}
 	}
@@ -68,7 +66,7 @@ func UpdateAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err = db.Exec("UPDATE info SET first_name = ?,role = ?,location = ?,github_acc_link = ?,linkedin_link = ?,email_link = ?,picture_url = ?",
+	_, err = db.Exec("UPDATE info SET name = ?,role = ?,location = ?,github_acc_link = ?,linkedin_link = ?,email_link = ?,picture_url = ?",
 	&updatedData.Name, 
 	&updatedData.Role,
 	&updatedData.Location,

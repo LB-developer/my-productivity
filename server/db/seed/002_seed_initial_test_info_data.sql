@@ -1,2 +1,2 @@
-INSERT INTO info (first_name, last_name, role, location, github_acc_link, linkedin_link, email_link, picture_url, fav_technologies) VALUES
-("John", "Test Last Name","Full-stack developer","Auckland","github.com/test", "linkedin.com/test", "test_email@gmail.com", "picture_url_here", "todo: create technologies table");
+INSERT INTO info (name, role, location, github_acc_link, linkedin_link, email_link, picture_url) VALUES
+("John","Full-stack developer","Auckland","github.com/test", "linkedin.com/test", "test_email@gmail.com", "picture_url_here");
