@@ -1,0 +1,9 @@
+.choose-tech-selector {
+  display: flex;
+  flex-direction: row;
+}
+
+.choose-tech-selector:hover {
+  background-color: rgba(240, 248, 255, 0.356);
+  cursor: pointer;
+}

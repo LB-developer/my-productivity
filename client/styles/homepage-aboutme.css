@@ -1,151 +1,150 @@
-/* about-me.css */
+/* Main About Me Section */
 .about-me {
-  padding: 2rem 5%;
-  background-color: #f8f9fa;
-  color: #333333;
-  min-height: 85vh;
-  min-width: 75vw;
+  padding: 2rem 10%;
+  background-color: transparent;
+  color: #E0E6ED;
+  min-height: 65vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
+/* About Me Container */
+.about-me-container {
+  display: flex;
+  background-color: rgba(15, 27, 42, 0.9);
+  width: 100%;
+  justify-content: center;
+  border-radius: 8px;
+  padding: clamp(1rem, 2vw, 2rem);
+}
+
+/* Container Layout */
 .about-me__container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  max-width: 1000px;
-  gap: 2rem;
+  max-width: 1100px;
+  gap: clamp(1rem, 3vw, 3rem);
   flex-wrap: wrap;
-  width: 100%;
 }
 
-/* Profile Picture */
+/* Profile Picture Section */
 .about-me__profile-picture {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-right: clamp(20px, 5vw, 50px);
+  padding-bottom: clamp(50px, 10vh, 150px);
   min-width: 150px;
 }
 
+/* Profile Image Styling */
 .about-me__profile-img {
   width: 100%;
-  max-width: 150px;
+  max-width: clamp(200px, 30vw, 300px);
   aspect-ratio: 1/1;
   border-radius: 50%;
-  border: 0.25rem solid #A6C8FF;
+  border: 0.25rem solid #64FFDA;
   object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Text Content */
+/* Text Content Section */
 .about-me__content {
   flex: 2;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: clamp(1rem, 2vw, 1.5rem);
   max-width: 100%;
 }
 
-/* Header */
-.about-me__header {
-  margin-bottom: 1rem;
+/* Greeting Styling */
+.about-me__greeting {
+  font-size: clamp(0.75rem, 2vw, 1.2rem);
+  font-weight: 400;
+  color: #35df1ec7;
+  line-height: 1.2;
+  margin-left: 2px;
 }
 
+/* Name Styling */
 .about-me__name {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333333;
+  font-size: clamp(2rem, 6vw, 6rem);
+  font-weight: 800;
+  color: #d7e1ecaf;
+  margin: 0;
 }
 
+/* Role Styling */
 .about-me__role {
-  font-size: 1.5rem;
-  color: #555555;
+  font-size: clamp(1.5rem, 5.5vw, 5rem);
+  color: #d3d0ff88;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0;
 }
 
-.about-me__location {
-  font-size: 1rem;
-  color: #666666;
+/* Blurb Styling */
+.about-me__blurb {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: #d3d0ff7e;
+  line-height: 1.55em;
+  width: clamp(60%, 75%, 80%);
 }
 
-/* Contact Information */
+/* Contact Information Section */
 .about-me__contacts {
   display: flex;
-  gap: 1rem;
+  gap: clamp(1rem, 2vw, 1.5rem);
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
+.contact-icons {
+  height: 30px;
+}
+
+/* Contact Links */
 .about-me__contact-link {
-  color: #A6C8FF;
+  color: #35df1ec7;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .about-me__contact-link:hover {
-  text-decoration: underline;
+  color: #00C896;
+  transform: translateY(-2px);
 }
 
-/* Favorite Technologies */
-.about-me__technologies {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.about-me__tech-icon {
-  padding: 0.3rem 0.6rem;
-  background-color: #A6C8FF;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-/* Scroll Indicator */
-.about-me__scroll-indicator {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1rem;
-  color: #555555;
-  cursor: pointer;
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-  40% { transform: translateX(-50%) translateY(-10px); }
-  60% { transform: translateX(-50%) translateY(-5px); }
-}
-
-/* Responsive Design for Tablets */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .about-me__container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .about-me__contacts {
-    justify-content: center;
+    gap: clamp(1rem, 3vw, 2rem);
   }
 
   .about-me__profile-picture {
-    margin-bottom: 1rem;
+    padding-right: 0;
+    padding-bottom: clamp(20px, 5vw, 50px);
   }
 
   .about-me__profile-img {
-    max-width: 120px;
+    max-width: clamp(180px, 25vw, 260px);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-me__container {
+    gap: clamp(1rem, 2vw, 1.5rem);
   }
 
-  .about-me__name {
-    font-size: 1.8rem;
+  .about-me__profile-picture {
+    padding-bottom: clamp(20px, 5vw, 40px);
   }
 
-  .about-me__role {
-    font-size: 1.
+  .about-me__profile-img {
+    max-width: clamp(150px, 20vw, 220px);
   }
 }

@@ -1,38 +1,87 @@
+/* Global Color Scheme and Scroll Behavior */
 html {
   color-scheme: dark light;
   hanging-punctuation: first last;
   scroll-behavior: smooth;
 }
 
+/* Main Background and Typography */
 body {
-  min-height: 100svh;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  background-color: #0A192F;
+  color: #E0E6ED;
+  font-family: monospace;
+  overflow-x: hidden;
 }
 
+/* Main Content Container */
 .content-container {
   display: flex;
-  background-color: #172331;
   flex-direction: column;
-  align-items: center;
+  background-color: #0A192F;
+  padding: 2rem;
 }
-.about-me-container {
-  display: flex;
-  background-color: rgb(24,143,88, .75);
-  width: 100%;
-  height: 85vh;
-  justify-content: center;
 
-}
-.projects-container {
+/* Main Navigation */
+.global-nav {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: 85vh;
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 20px;
+  margin-right: 20px;
 }
-.projects-overview-showcase {
+
+/* Logo Styling */
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Right Side Links Container */
+.global-nav-routes {
   display: flex;
-  flex-direction: column;
-  
+  gap: 20px;
+}
+
+/* Individual Links */
+.nav-link {
+  display: flex;
+  color: #E0E6ED;
+  align-items: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+/* '/' Symbol Styling */
+.nav-highlight {
+  font-weight: bold;
+  color: #34df1e;
+  margin-right: 3px;
+}
+
+.nav-word {
+  color: #E0E6ED;
+  margin-right: 3px;
+}
+
+/* Hover Effect for Links */
+.nav-link:hover .nav-word {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .global-nav {
+    padding: 0 10px;
+  }
+
+  .global-nav-routes {
+    gap: 10px;
+  }
+
+  .nav-link {
+    font-size: clamp(10px, 14px, 16px);
+  }
 }
