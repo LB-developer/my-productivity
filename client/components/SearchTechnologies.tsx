@@ -23,37 +23,43 @@ const TechnologySearch = () => {
   }
 
   return (
-    <div className="edit-about-me-technologies">
-      {isLoading && <p>Loading technologies...</p>}
-      {isError && <p>Error loading technologies: {error?.message}</p>}
+    <>
+      <input
+        type="text"
+        name="search-technologies"
+        id="fav-tech-search"
+        placeholder="Enter technology..."
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+      <div className="edit-about-me-technologies">
+        {isLoading && <p>Loading technologies...</p>}
+        {isError && <p>Error loading technologies: {error?.message}</p>}
 
-      {!isLoading && !isError ? (
-        <>
-          <input
-            type="text"
-            name="search-technologies"
-            id="fav-tech-search"
-            placeholder="Enter technology..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-
-          <div className="tech-container">
-            <div className="tech-content">
-              {filteredTechnologies.length > 0 ? (
-                filteredTechnologies.map((tech, idx) => (
-                  <p key={idx}>{tech.name}</p> // Display matching technologies
-                ))
-              ) : (
-                <p>No technologies found.</p>
-              )}
+        {!isLoading && !isError ? (
+          <>
+            <div className="tech-container">
+              <div className="tech-content">
+                {filteredTechnologies.length > 0 ? (
+                  filteredTechnologies.map((tech, idx) => (
+                    <div
+                      className="choose-tech-selector"
+                      key={`choose tech div ${idx}`}
+                    >
+                      <p key={idx}>{tech.name}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No technologies found.</p>
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      ) : (
-        <p>Couldn't load data</p>
-      )}
-    </div>
+          </>
+        ) : (
+          <p>No data</p>
+        )}
+      </div>
+    </>
   )
 }
 

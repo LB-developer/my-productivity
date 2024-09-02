@@ -26,7 +26,7 @@ export default function Projects() {
     return (
       <>
         <div className="projects-container">
-          <h2>Projects ↓</h2>
+          <p>Projects ↓</p>
           <div className="projects-overview-showcase">
             {projects.map((project: Project) => {
               return <li key={project.id}>{project.name}</li>
