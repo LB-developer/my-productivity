@@ -28,6 +28,8 @@ func GetAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 			&aboutMe.ID, 
 			&aboutMe.Name, 
 			&aboutMe.Role,
+			&aboutMe.SimpleBlurb,
+			&aboutMe.DetailedBlurb,
 			&aboutMe.Location,
 			&aboutMe.Github,
 			&aboutMe.Linkedin,
@@ -66,9 +68,11 @@ func UpdateAboutMeHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err = db.Exec("UPDATE info SET name = ?,role = ?,location = ?,github_acc_link = ?,linkedin_link = ?,email_link = ?,picture_url = ?",
+	_, err = db.Exec("UPDATE info SET name = ?,role = ?, simple_blurb = ?, detailed_blurb = ?, location = ?,github_acc_link = ?,linkedin_link = ?,email_link = ?,picture_url = ?",
 	&updatedData.Name, 
 	&updatedData.Role,
+	&updatedData.SimpleBlurb,
+	&updatedData.DetailedBlurb,
 	&updatedData.Location,
 	&updatedData.Github,
 	&updatedData.Linkedin,

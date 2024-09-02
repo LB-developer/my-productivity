@@ -15,6 +15,8 @@ type PersonalInfo struct {
 	ID         		  int    `json:"id"`
 	Name  		  		string `json:"Name"`
 	Role		  		  string `json:"Role"`
+	SimpleBlurb			string `json:"SimpleBlurb"`
+	DetailedBlurb		string `json:"DetailedBlurb"`
 	Location  		  string `json:"Location"`
 	Github 		  		string `json:"Github"`
 	Linkedin 				string `json:"Linkedin"`
@@ -23,15 +25,16 @@ type PersonalInfo struct {
 }
 
 type PersonalInfoWithoutId struct {
-	Name	 		  string 
-	Last_name   string 
-	Role		  	string 
-	Location  	string 
-	Github 			string 
-	Linkedin 		string 
-	Email     	string 
-	Picture  		string 
-	Technologies   string 
+	Name	 		  		string 
+	Role		  			string 
+	SimpleBlurb			string
+	DetailedBlurb		string
+	Location  			string 
+	Github 					string 
+	Linkedin 				string 
+	Email     			string 
+	Picture  				string 
+	Technologies   	string 
 }
 
 type Technologies []Technology

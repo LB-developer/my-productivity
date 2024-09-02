@@ -6,6 +6,8 @@ import SearchTechnologies from './SearchTechnologies'
 const renderedInputFields = {
   Name: 'Name',
   Role: 'Role',
+  SimpleBlurb: 'SimpleBlurb',
+  DetailedBlurb: 'DetailedBlurb',
   Location: 'Location',
   Email: 'Email',
   Github: 'Github',
@@ -37,13 +39,28 @@ export default function EditAboutMe() {
   const createInputFields = (): JSX.Element[] | undefined => {
     if (aboutMeData)
       return Object.entries(renderedInputFields).map((infoEl, index) => (
-        <div className="about-me-form-group" key={`about-me-div ${index}`}>
+        <div
+          className={`about-me-form-group ${
+            infoEl[0] === 'SimpleBlurb' || infoEl[0] === 'DetailedBlurb'
+              ? 'blurb-wrapper'
+              : 'form-wrapper'
+          }`}
+          key={`about-me-div ${index}`}
+        >
           <p className="about-me-form-title" key={`about-me-p ${index}`}>
             {infoEl[0]}
           </p>
-          <input
-            className="about-me-form-input"
-            type="text"
+          <textarea
+            className={`about-me-form-input ${
+              infoEl[0] === 'SimpleBlurb' || infoEl[0] === 'DetailedBlurb'
+                ? 'about-me-form-input--blurb'
+                : ''
+            }`}
+            maxLength={
+              infoEl[0] === 'SimpleBlurb' || infoEl[0] === 'DetailedBlurb'
+                ? 1000
+                : 35
+            }
             name={infoEl[0]}
             key={`about-me-input ${index}`}
             defaultValue={aboutMeData[infoEl[1] as AboutMeKey]}
@@ -54,7 +71,7 @@ export default function EditAboutMe() {
 
   const handleRenderForm = () => {
     return (
-      <>
+      <div className="form-wrapper">
         <form onSubmit={async (e) => await handleSubmitChanges(e)}>
           <fieldset className="about-me-form-fieldset">
             <label>{createInputFields()}</label>
@@ -63,7 +80,7 @@ export default function EditAboutMe() {
             </button>
           </fieldset>
         </form>
-      </>
+      </div>
     )
   }
 
@@ -86,3 +103,4 @@ export default function EditAboutMe() {
     )
   }
 }
+

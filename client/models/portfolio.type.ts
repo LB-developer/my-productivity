@@ -13,6 +13,8 @@ export interface PersonalInfo {
   id: number
   Name: string
   Role: string
+  SimpleBlurb: string
+  DetailedBlurb: string
   Location: string
   Github: string
   Linkedin: string

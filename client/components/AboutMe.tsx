@@ -16,24 +16,14 @@ export default function AboutMe() {
       <>
         <section className="about-me">
           <div className="about-me__container">
-            {/* Profile Picture */}
-            <div className="about-me__profile-picture">
-              <img
-                src={`${aboutMeData.Picture}`}
-                alt={`Profile Picture of ${aboutMeData.Name}`}
-                className="about-me__profile-img"
-              />
-            </div>
-
             {/* Text Content */}
             <div className="about-me__content">
               <header className="about-me__header">
+                <p className="about-me__greeting">Hey there, I’m</p>
                 <h1 className="about-me__name">{aboutMeData.Name}</h1>
                 <h2 className="about-me__role">{aboutMeData.Role}</h2>
               </header>
-              <p className="about-me__location">
-                Location: {aboutMeData.Location}
-              </p>
+              <p className="about-me__blurb">{aboutMeData.SimpleBlurb}</p>
 
               {/* Contact Information */}
               <div className="about-me__contacts">
@@ -52,7 +42,7 @@ export default function AboutMe() {
                   GitHub
                 </a>
                 <a
-                  href={aboutMeData.linkedin_link}
+                  href={aboutMeData.Linkedin}
                   className="about-me__contact-link"
                   target="_blank"
                   rel="noopener noreferrer"
