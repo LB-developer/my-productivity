@@ -1,7 +1,5 @@
 import { PersonalInfo } from '../models/portfolio.type'
 import { useGetAboutMe, useUpdateAboutMe } from '../hooks/index'
-import React from 'react'
-import SearchTechnologies from './SearchTechnologies'
 
 const renderedInputFields = {
   Name: 'Name',
@@ -98,7 +96,6 @@ export default function EditAboutMe() {
       <div className="edit-about-me-container">
         <h1 className="edit-about-me-heading">Edit About Me</h1>
         {handleRenderForm()}
-        <SearchTechnologies />
       </div>
     )
   }

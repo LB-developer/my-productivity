@@ -1,13 +1,5 @@
-import Projects from './Projects'
-import AboutMe from './AboutMe'
-
 function HomePage() {
-  return (
-    <div className="content-container">
-      <AboutMe />
-      <Projects />
-    </div>
-  )
+  return <div className="content-container">DASHBOARD</div>
 }
 
 export default HomePage
