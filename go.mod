@@ -1,4 +1,4 @@
-module github.com/POR7ALa/portfolio
+module github.com/POR7ALa/my-productivity
 
 go 1.23.0
 

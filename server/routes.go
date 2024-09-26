@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 
-	"github.com/POR7ALa/portfolio/api/serverapi"
+	"github.com/POR7ALa/my-productivity/api/serverapi"
 )
 
 func SetupRoutes() *chi.Mux {
