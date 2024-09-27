@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func GetCoursesById(w http.ResponseWriter, req *http.Request) {
@@ -72,15 +73,17 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetTotalHours (w http.ResponseWriter, req *http.Request) {
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
-		log.Printf("couldn't read request body %v", err)
-	}
 
-	var userId UserIDReq
-	err = json.Unmarshal(body, &userId)
+	userIdStr := req.URL.Query().Get("userId")
+	if userIdStr == "" {
+		http.Error(w, "Missing userId parameter", http.StatusBadRequest)
+		return
+	}
+	
+	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
-		log.Printf("unable to parse JSON %v", err)
+		http.Error(w, "Invalid userId parameter", http.StatusBadRequest)
+		return
 	}
 
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
@@ -89,7 +92,7 @@ func GetTotalHours (w http.ResponseWriter, req *http.Request) {
 	}
 
 	var totalHours int
-	err = db.QueryRow("SELECT SUM(hours_completed) FROM courses WHERE user_id = ?", userId.UserID).Scan(&totalHours)
+	err = db.QueryRow("SELECT SUM(hours_completed) FROM courses WHERE user_id = ?", userId).Scan(&totalHours)
 	if err != nil {
 		log.Printf("couldn't query db_table: courses %v", err)
 	}

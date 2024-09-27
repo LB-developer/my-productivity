@@ -20,7 +20,7 @@ func SetupRoutes() *chi.Mux {
 }))
 	
 	router.Get("/api/v1/courses", serverapi.GetCoursesById)
-	
+	router.Get("/api/v1/courses/hours", serverapi.GetTotalHours)
 	
 	return router
 }
