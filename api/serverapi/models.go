@@ -11,30 +11,19 @@ type Project struct {
 	Status       string `json:"status"`
 }
 
-type PersonalInfo struct {
-	ID         		  int    `json:"id"`
-	Name  		  		string `json:"Name"`
-	Role		  		  string `json:"Role"`
-	SimpleBlurb			string `json:"SimpleBlurb"`
-	DetailedBlurb		string `json:"DetailedBlurb"`
-	Location  		  string `json:"Location"`
-	Github 		  		string `json:"Github"`
-	Linkedin 				string `json:"Linkedin"`
-	Email     		  string `json:"Email"`
-	Picture  				string `json:"Picture"`
+type Course struct {
+	ID              int    `json:"id"`
+	UserID          int    `json:"userId"`
+	Name            string `json:"name"`
+	Price           string `json:"price"`
+	Author          string `json:"author"`
+	Link            string `json:"link"`
+	HoursToComplete int    `json:"hoursToComplete"`
+	HoursCompleted  int    `json:"hoursCompleted"`
 }
 
-type PersonalInfoWithoutId struct {
-	Name	 		  		string 
-	Role		  			string 
-	SimpleBlurb			string
-	DetailedBlurb		string
-	Location  			string 
-	Github 					string 
-	Linkedin 				string 
-	Email     			string 
-	Picture  				string 
-	Technologies   	string 
+type UserIDReq struct {
+	UserID int `json:"userId"`
 }
 
 type Technologies []Technology

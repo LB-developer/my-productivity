@@ -19,9 +19,8 @@ func SetupRoutes() *chi.Mux {
 		MaxAge:           300, 
 }))
 	
-	router.Get("/api/v1/projects", serverapi.GetProjectsHandler)
-	router.Get("/api/v1/about-me", serverapi.GetAboutMeHandler)
-	router.Get("/api/v1/about-me/technologies", serverapi.GetTechnologiesHandler)
-	router.Patch("/api/v1/about-me", serverapi.UpdateAboutMeHandler)
+	router.Get("/api/v1/courses", serverapi.GetCoursesById)
+	
+	
 	return router
 }
