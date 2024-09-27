@@ -26,6 +26,10 @@ type UserIDReq struct {
 	UserID int `json:"userId"`
 }
 
+type LastThirtyHoursInMinutes struct {
+	Hours int `json:"hoursAsMinutes"`
+}
+
 type Technologies []Technology
 
 type Technology struct {

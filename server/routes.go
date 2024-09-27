@@ -18,9 +18,16 @@ func SetupRoutes() *chi.Mux {
 		AllowCredentials: false,
 		MaxAge:           300, 
 }))
-	
+
+	// Course routes
 	router.Get("/api/v1/courses", serverapi.GetCoursesById)
 	router.Get("/api/v1/courses/hours", serverapi.GetTotalHours)
+
+	// Task routes
+	router.Get("/api/v1/tasks/last-30", serverapi.GetLastMonthHours)
+
+	// Technology routes
+	router.Get("/api/v1/technologies", serverapi.GetTechnologiesHandler)
 	
 	return router
 }

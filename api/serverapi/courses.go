@@ -18,7 +18,6 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	log.Print("Running")
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(w, "Unable to read request body", http.StatusBadRequest)
@@ -76,13 +75,13 @@ func GetTotalHours (w http.ResponseWriter, req *http.Request) {
 
 	userIdStr := req.URL.Query().Get("userId")
 	if userIdStr == "" {
-		http.Error(w, "Missing userId parameter", http.StatusBadRequest)
+		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 	
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
-		http.Error(w, "Invalid userId parameter", http.StatusBadRequest)
+		http.Error(w, "Invalid userId query", http.StatusBadRequest)
 		return
 	}
 
@@ -105,47 +104,5 @@ func GetTotalHours (w http.ResponseWriter, req *http.Request) {
 
 }
 
-// func fetchTechnologies() (Technologies, error) {
-// 		w, err := http.Get("https://raw.githubusercontent.com/devicons/devicon/master/devicon.json")
-//     if err != nil {
-//         log.Printf("Failed to fetch icons: %v", err) // Log exact error
-//         return nil, fmt.Errorf("failed to fetch icons: %w", err)
-//     }
-//     defer w.Body.Close()
-
-//     if w.StatusCode != http.StatusOK {
-//         log.Printf("Unexpected wponse status: %s", w.Status)
-//         return nil, fmt.Errorf("unexpected wponse status: %s", w.Status)
-//     }
-
-//     body, err := io.ReadAll(w.Body)
-//     if err != nil {
-//         log.Printf("Failed to read wponse body: %v", err)
-//         return nil, fmt.Errorf("failed to read wponse body: %w", err)
-//     }
-
-//     var icons Technologies
-//     err = json.Unmarshal(body, &icons)
-//     if err != nil {
-//         log.Printf("Failed to parse JSON: %v", err)
-//         return nil, fmt.Errorf("failed to parse JSON: %w", err)
-//     }
-
-//     return icons, nil
-// }
-
-// func GetTechnologiesHandler(w http.ResponseWriter, req *http.Request) {
-// 	icons, err := fetchTechnologies()
-// 	if err != nil {
-// 		http.Error(w, "Failed to fetch technologies", http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	w.Header().Set("Content-Type", "application/json")
-// 	err = json.NewEncoder(w).Encode(icons)
-// 	if err != nil {
-// 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
-// 	}
-// }
 
 
