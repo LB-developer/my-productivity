@@ -49,7 +49,7 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	var lastThirtyGraph []LastThirtyInGraph
 	var lastThirty LastThirtyInGraph	
 	lastThirty.Id = `history`
-	lastThirty.Colour = "hsl(251, 100%, 55%)"
+	lastThirty.Color = "hsl(251, 100%, 55%)"
 	
 	for rows.Next() {
 		var md 		string // month day

@@ -33,7 +33,7 @@ type Coordinates struct {
 
 type LastThirtyInGraph struct  {
 	Id string `json:"id"`
-	Colour string `json:"colour"`
+	Color string `json:"color"`
 	Data []Coordinates `json:"data"`
 }
 
