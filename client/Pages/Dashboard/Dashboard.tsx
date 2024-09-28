@@ -1,12 +1,15 @@
-import CoursesPreview from '../components/Widgets/CoursesPreview'
-import MonthlyHours from '../components/Widgets/MonthlyHours'
-import ActivityPreview from '../components/Widgets/ActivityPreview'
-import CurrentProgress from '../components/Widgets/CurrentProgress'
-import MonthlySpend from '../components/Widgets/MonthlySpend'
-import SchedulePreview from '../components/Widgets/SchedulePreview'
-import TotalSpend from '../components/Widgets/TotalSpend'
-import UserOverview from '../components/Widgets/UserOverview'
+import CoursesPreview from '../../components/Widgets/CoursesPreview'
+import MonthlyHours from '../../components/Widgets/MonthlyHours'
+import ActivityPreview from '../../components/Widgets/ActivityPreview'
+import CurrentProgress from '../../components/Widgets/CurrentProgress'
+import MonthlySpend from '../../components/Widgets/MonthlySpend'
+import SchedulePreview from '../../components/Widgets/SchedulePreview'
+import TotalSpend from '../../components/Widgets/TotalSpend'
+import UserOverview from '../../components/Widgets/UserOverview'
+
 export default function Dashboard() {
+  const userId: number = 1
+
   return (
     <div className="grid grid-cols-11 grid-rows-8 gap-4  bg-slate-300 h-dvh">
       <div className="col-start-3 col-span-6 my-6">
@@ -35,7 +38,7 @@ export default function Dashboard() {
         <CurrentProgress />
       </div>
       <div className="bg-amber-400 col-start-9 col-span-3 row-span-3">
-        <UserOverview />
+        <UserOverview userId={userId} />
       </div>
     </div>
   )

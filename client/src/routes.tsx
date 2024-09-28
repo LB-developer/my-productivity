@@ -1,7 +1,7 @@
 import { createRoutesFromElements, Route } from 'react-router-dom'
 
 import App from '../components/App'
-import Dashboard from '../Pages/Dashboard'
+import Dashboard from '../Pages/Dashboard/Dashboard'
 
 export const routes = createRoutesFromElements(
   <Route path="/" element={<App />}>
