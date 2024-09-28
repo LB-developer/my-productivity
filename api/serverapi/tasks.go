@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 )
@@ -31,14 +32,13 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	// get sum of minutes for completed tasks within in the last 30 days
 	query := `
 	SELECT 
-	strftime('%m', study_date) AS month,
-	strftime('%d', study_date) AS day,
+	strftime('%m/%d', study_date) AS month,
 	SUM(strftime('%s', study_length) - strftime('%s', '00:00:00')) / 60 AS total_minutes
 	FROM tasks 
 	WHERE user_id = ? 
 	AND julianday('now') - julianday(study_date) BETWEEN 0 AND 30
 	GROUP BY
-	month, day;`
+	month;`
 	
 	rows, err := db.Query(query, userIdNum)
 	if err != nil {
@@ -46,26 +46,29 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	}
 	defer rows.Close()
 	
-	var lastThirty []LastThirtyInMinutes
+	var lastThirtyGraph []LastThirtyInGraph
+	var lastThirty LastThirtyInGraph	
+	lastThirty.Id = `history`
+	lastThirty.Colour = "hsl(251, 100%, 55%)"
+	
 	for rows.Next() {
-		var month 	int
-		var day 		int
-		var minutes int
+		var md 		string // month day
+		var minutes float64
 
 		err := rows.Scan(
-			&month,
-			&day,
+			&md,
 			&minutes)
 		if err != nil {
 			log.Printf("couldn't scan %v", err)
 		}	
 		
-		lastThirty = append(lastThirty, LastThirtyInMinutes{Month: month, Day: day, Minutes: minutes})
+		lastThirty.Data = append(lastThirty.Data, Coordinates{X: md, Y: math.Round(minutes / 60)})
 	}
+	lastThirtyGraph = append(lastThirtyGraph, lastThirty)
 
 
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(lastThirty)
+	err = json.NewEncoder(w).Encode(lastThirtyGraph)
 	if err != nil {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}

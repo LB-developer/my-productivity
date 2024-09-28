@@ -26,12 +26,17 @@ type UserIDReq struct {
 	UserID int `json:"userId"`
 }
 
-// holds the last 30 days of time spent on tasks
-type LastThirtyInMinutes struct {
-	Month 	int `json:"month"`
-	Day 		int `json:"day"`
-	Minutes int	`json:"minutes"`
+type Coordinates struct {
+	X string `json:"x"`
+	Y float64 `json:"y"`
 }
+
+type LastThirtyInGraph struct  {
+	Id string `json:"id"`
+	Colour string `json:"colour"`
+	Data []Coordinates `json:"data"`
+}
+
 
 type Technologies []Technology
 

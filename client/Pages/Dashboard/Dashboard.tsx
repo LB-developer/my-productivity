@@ -16,8 +16,8 @@ export default function Dashboard() {
         <p>Welcome to your,</p>
         <h2 className="font-extrabold text-5xl">Productivity Dashboard</h2>
       </div>
-      <div className="bg-purple-400 col-start-3 col-span-3 row-start-2">
-        <MonthlyHours />
+      <div className="bg-slate-200 col-start-3 col-span-3 row-start-2">
+        <MonthlyHours userId={String(userId)} />
       </div>
       <div className="bg-red-300 col-start-6 col-span-3 row-start-2">
         <MonthlySpend />
