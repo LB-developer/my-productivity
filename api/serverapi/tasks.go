@@ -30,20 +30,42 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	
 	// get sum of minutes for completed tasks within in the last 30 days
 	query := `
-	SELECT SUM(strftime('%s', study_length) - strftime('%s', '00:00:00')) / 60 
+	SELECT 
+	strftime('%m', study_date) AS month,
+	strftime('%d', study_date) AS day,
+	SUM(strftime('%s', study_length) - strftime('%s', '00:00:00')) / 60 AS total_minutes
 	FROM tasks 
 	WHERE user_id = ? 
-	AND is_completed = 1 
-	AND julianday('now') - julianday(study_date) < 31;`
+	AND julianday('now') - julianday(study_date) BETWEEN 0 AND 30
+	GROUP BY
+	month, day;`
 	
-	var lastMonthHours LastThirtyHoursInMinutes
-	err = db.QueryRow(query, userIdNum).Scan(&lastMonthHours.Hours)
+	rows, err := db.Query(query, userIdNum)
 	if err != nil {
 		log.Printf("couldn't query last month hours of db_table: tasks %v", err)
 	}
+	defer rows.Close()
+	
+	var lastThirty []LastThirtyInMinutes
+	for rows.Next() {
+		var month 	int
+		var day 		int
+		var minutes int
+
+		err := rows.Scan(
+			&month,
+			&day,
+			&minutes)
+		if err != nil {
+			log.Printf("couldn't scan %v", err)
+		}	
+		
+		lastThirty = append(lastThirty, LastThirtyInMinutes{Month: month, Day: day, Minutes: minutes})
+	}
+
 
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(lastMonthHours)
+	err = json.NewEncoder(w).Encode(lastThirty)
 	if err != nil {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}
