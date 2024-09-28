@@ -1,3 +1,1 @@
-export { useGetAboutMe } from './useGetData'
-export { useUpdateAboutMe } from './usePatchData'
-export { useGetTechnologies } from './useGetTechnologies'
+export { useGetTotalHoursCompleted } from './Courses/useGetHours'
