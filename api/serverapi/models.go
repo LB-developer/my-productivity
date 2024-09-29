@@ -22,6 +22,14 @@ type Course struct {
 	HoursCompleted  int    `json:"hoursCompleted"`
 }
 
+type TaskPreview struct {
+	TaskID						int     `json:"taskId"`
+	TaskStudyLength		string  `json:"taskStudyLength"`
+	CourseID					int     `json:"courseId"`
+	CourseName				string  `json:"courseName"`
+	CourseAuthor			string  `json:"courseAuthor"`
+}
+
 type UserIDReq struct {
 	UserID int `json:"userId"`
 }

@@ -26,6 +26,9 @@ func SetupRoutes() *chi.Mux {
 	// Task routes
 	router.Get("/api/v1/tasks/last-30", serverapi.GetLastMonthHours)
 
+	// Schedule routes
+	router.Get("/api/v1/schedules/preview", serverapi.GetSchedulePreview)
+
 	// Technology routes
 	router.Get("/api/v1/technologies", serverapi.GetTechnologiesHandler)
 	
