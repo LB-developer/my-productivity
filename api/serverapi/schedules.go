@@ -48,7 +48,8 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 		http.Error(w, "couldn't query prod.db", http.StatusInternalServerError)
 		return
 	}
-
+	defer rows.Close()
+	
 	for rows.Next() {
 		var taskId int
 		var taskStudyLength string
