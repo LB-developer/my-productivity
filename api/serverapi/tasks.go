@@ -15,7 +15,7 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Printf("couldn't open prod.db, %v", err)
 	}
-
+	defer db.Close()
 	
 	userIdStr := req.URL.Query().Get("userId")	
 	if userIdStr == "" {
@@ -23,17 +23,25 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	
+	// convert userId string to int
 	userIdNum, err := strconv.Atoi(userIdStr)
 	if err != nil {
 		http.Error(w, "Invalid userId query", http.StatusBadRequest)
 		return
 	}
 	
-	// get sum of minutes for completed tasks within in the last 30 days
+	// get sum of hours for completed tasks within in the last 30 days
+	// uncompleted tasks contribute 0 to total time
+	// returned format is: MM/DD | Hours
 	query := `
 	SELECT 
 	strftime('%m/%d', study_date) AS month,
-	SUM(strftime('%s', study_length) - strftime('%s', '00:00:00')) / 60 AS total_minutes
+	SUM(
+		CASE 
+			WHEN is_completed = 1 THEN (strftime('%s', study_length) - strftime('%s', '00:00:00')) / 60
+			ELSE 0
+		END
+		) AS total_time
 	FROM tasks 
 	WHERE user_id = ? 
 	AND julianday('now') - julianday(study_date) BETWEEN 0 AND 30
@@ -48,8 +56,8 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	
 	var lastThirtyGraph []LastThirtyInGraph
 	var lastThirty LastThirtyInGraph	
-	lastThirty.Id = `history`
-	lastThirty.Color = "hsl(251, 100%, 55%)"
+	lastThirty.Id = "history" // id property for nivo graph struct
+	lastThirty.Color = "blue" // color property ^
 	
 	for rows.Next() {
 		var md 		string // month day
