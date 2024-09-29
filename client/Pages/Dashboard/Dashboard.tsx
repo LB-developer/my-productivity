@@ -12,7 +12,7 @@ export default function Dashboard() {
 
   return (
     <div className="grid grid-cols-11 grid-rows-8 gap-4  bg-slate-300 h-dvh">
-      <div className="col-start-3 col-span-6 my-6">
+      <div className="col-start-3 col-span-9 my-6">
         <p>Welcome to your,</p>
         <h2 className="font-extrabold text-5xl">Productivity Dashboard</h2>
       </div>
