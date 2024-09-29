@@ -12,3 +12,11 @@ export interface ThirtyHistoryLineGraph {
   color: string
   data: LineCoordinates[]
 }
+
+export interface SchedulePreviewData {
+  taskId: number
+  taskStudyLength: string
+  courseId: number
+  courseName: string
+  courseAuthor: string
+}
