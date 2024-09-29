@@ -13,19 +13,23 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
 	if err != nil {
-		log.Print(err)
+		log.Printf("Couldn't open database \n%v", err)
+		http.Error(w, "Couldn't connect to database", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
+		log.Printf("Unable to read request body \n%v", err)
 		http.Error(w, "Unable to read request body", http.StatusBadRequest)
+		return
 	}
 
 	var userId UserIDReq
 	err = json.Unmarshal(body, &userId)
 	if err != nil {
+		log.Printf("Unable to parse JSON \n%v", err)
 		http.Error(w, "Unable to parse JSON", http.StatusBadRequest)
 		return
 	}
@@ -33,6 +37,8 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Query("SELECT * FROM courses WHERE user_id = ?", userId.UserID)
 	if err != nil {
 		log.Printf("Could not query db_table: %s\n %v","courses", err)
+		http.Error(w, "Could not query db_table: courses", http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 	
@@ -57,17 +63,29 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 			&hoursToComplete,
 			&hoursCompleted,
 			) 
+			
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			log.Println(id, userId)
-			courses = append(courses, Course{ID: id, UserID: userId, Name: name, Price: price, Author: author, Link: link, HoursToComplete: hoursToComplete, HoursCompleted: hoursCompleted})
+			
+			courses = append(courses, Course{
+				ID: id, 
+				UserID: userId, 
+				Name: name, 
+				Price: price, 
+				Author: author, 
+				Link: link, 
+				HoursToComplete: hoursToComplete, 
+				HoursCompleted: hoursCompleted})
 	}
+	defer rows.Close()
+
 	w.Header().Set("Content-Type", "application/json")
   err = json.NewEncoder(w).Encode(courses)
 	if err != nil {
+		log.Printf("Failed to encode JSON \n%v", err)
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -75,33 +93,41 @@ func GetTotalHours (w http.ResponseWriter, req *http.Request) {
 
 	userIdStr := req.URL.Query().Get("userId")
 	if userIdStr == "" {
+		log.Printf("Missing user Id query")
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 	
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
+		log.Printf("Invalid userId query \n%v", err)
 		http.Error(w, "Invalid userId query", http.StatusBadRequest)
 		return
 	}
 
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Couldn't open database \n%v", err)
+		http.Error(w, "Couldn't connect to database", http.StatusInternalServerError)
+		return
 	}
+	defer db.Close()
 
 	var totalHours int
 	err = db.QueryRow("SELECT SUM(hours_completed) FROM courses WHERE user_id = ?", userId).Scan(&totalHours)
 	if err != nil {
 		log.Printf("couldn't query db_table: courses %v", err)
+		http.Error(w, "Couldn't query db_table: courses", http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(map[string]int{"totalHours": totalHours})
 	if err != nil {
+		log.Printf("Failed to encode JSON \n%v", err)
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		return
 	}
-
 }
 
 

@@ -14,13 +14,15 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 
 	userIdNum, err := strconv.Atoi(userIdStr)
 	if err != nil {
-		log.Printf("couldn't convert userIdStr to int %v", err)
+		log.Printf("Couldn't convert userIdStr to int %v", err)
+		http.Error(w, "Couldn't conver userIdStr to int", http.StatusInternalServerError)
+		return
 	}
 
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
 	if err != nil {
-		log.Printf("couldn't open prod.db %v", err)
-		http.Error(w, "couldn't connect to prod.db", http.StatusInternalServerError)
+		log.Printf("Couldn't open prod.db %v", err)
+		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
 		return 
 	}
 	defer db.Close()
@@ -44,12 +46,12 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 	var todaysTasks []TaskPreview
 	rows, err := db.Query(query, userIdNum)
 	if err != nil {
-		log.Printf("couldn't query db %v", err)
-		http.Error(w, "couldn't query prod.db", http.StatusInternalServerError)
+		log.Printf("Couldn't query db %v", err)
+		http.Error(w, "Couldn't query prod.db", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
-	
+
 	for rows.Next() {
 		var taskId int
 		var taskStudyLength string

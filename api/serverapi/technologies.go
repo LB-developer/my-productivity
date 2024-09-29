@@ -11,7 +11,7 @@ import (
 func FetchTechnologies() (Technologies, error) {
 		w, err := http.Get("https://raw.githubusercontent.com/devicons/devicon/master/devicon.json")
     if err != nil {
-        log.Printf("Failed to fetch icons: %v", err) // Log exact error
+        log.Printf("Failed to fetch icons: %v", err) 
         return nil, fmt.Errorf("failed to fetch icons: %w", err)
     }
     defer w.Body.Close()

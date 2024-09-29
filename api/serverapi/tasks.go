@@ -13,7 +13,9 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
 	if err != nil {
-		log.Printf("couldn't open prod.db, %v", err)
+		log.Printf("Couldn't open prod.db %v", err)
+		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
+		return 
 	}
 	defer db.Close()
 	
