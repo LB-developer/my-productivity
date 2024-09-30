@@ -46,13 +46,15 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 		) AS total_time
 	FROM tasks 
 	WHERE user_id = ? 
-	AND julianday('now') - julianday(study_date) BETWEEN 0 AND 30
+	AND julianday('now') - julianday(study_date) BETWEEN -1 AND 29 -- -1 to account for handling US based date
 	GROUP BY
 	month;`
 	
 	rows, err := db.Query(query, userIdNum)
 	if err != nil {
 		log.Printf("couldn't query last month hours of db_table: tasks %v", err)
+		http.Error(w, "Couldn't query last month hours of db_table: tasks", http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 	
@@ -80,6 +82,8 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(lastThirtyGraph)
 	if err != nil {
+		log.Printf("Failed to encode lastThirtyGraph to JSON \n%v", err)
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		return
 	}
 }
