@@ -1,6 +1,6 @@
 export default function CurrentProgress() {
   return (
-    <div className="bg-teal-500">
+    <div className="">
       <p>CURRENT PROGRESS</p>
     </div>
   )
