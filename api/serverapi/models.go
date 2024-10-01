@@ -25,6 +25,7 @@ type Course struct {
 type TaskPreview struct {
 	TaskID							int     			`json:"taskId"`
 	TaskStudyLength			string  			`json:"taskStudyLength"`
+	TaskName 						string				`json:"taskName"`	
 	CourseID						int     			`json:"courseId"`
 	CourseName					string  			`json:"courseName"`
 	CourseAuthor				string  			`json:"courseAuthor"`

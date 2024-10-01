@@ -15,21 +15,15 @@ export default function SchedulePreview({ userId }: Props) {
         {/* add seed data, add gap, return proper data */}
         <ul>
           {schedulePreview.map((previewItem) => (
-            <div className="d-flex flex-row">
+            <div key={previewItem.taskId} className="d-flex flex-row">
               <div
                 className="bg-primary border-0 mt-2 ms-1"
                 style={{ width: '0.3em', height: '2.5em' }}
               ></div>
-              <Card
-                border="light"
-                bg={'light'}
-                key={previewItem.taskId}
-                text={'dark'}
-                className=""
-              >
+              <Card border="light" bg={'light'} text={'dark'} className="">
                 <Card.Body className="d-flex flex-column mb-0 pb-1 pt-1">
                   <Card.Title className="mb-0 fs-6 fw-bold mt-1">
-                    Finish the Dashboard
+                    {previewItem.taskName}
                   </Card.Title>
                   <Card.Text className="fw-light">
                     {previewItem.taskStudyLength}
@@ -38,34 +32,6 @@ export default function SchedulePreview({ userId }: Props) {
               </Card>
             </div>
           ))}
-          <div className="d-flex flex-row">
-            <div
-              className="bg-primary border-0 mt-2 ms-1"
-              style={{ width: '0.3em', height: '2.5em' }}
-            ></div>
-            <Card border="light" bg={'light'} text={'dark'} className="">
-              <Card.Body className="d-flex flex-column mt-1 mb-0 pb-1 pt-1">
-                <Card.Title className="mb-0 fs-6"> AWS </Card.Title>
-                <Card.Text className="fw-light">08:30 AM - 09:30 AM</Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
-          <div className="d-flex flex-row">
-            <div
-              className="bg-primary border-0 mt-2 ms-1"
-              style={{ width: '0.3em', height: '2.5em' }}
-            ></div>
-            <Card border="light" bg={'light'} text={'dark'} className="">
-              <Card.Body className="d-flex flex-column mb-0 pb-1 pt-1">
-                <Card.Title className="mb-0 fs-6 mt-1 fw-bold">
-                  GO For Dummies{' '}
-                </Card.Title>
-                <Card.Text className="fs-6 fw-light">
-                  01:30 PM - 03:30 PM
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
         </ul>
         <div className="d-flex flex-row justify-content-end fw-bold gap-2 pe-4 text-primary">
           <p>{'View all Tasks '}</p>

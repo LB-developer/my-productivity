@@ -16,6 +16,7 @@ export interface ThirtyHistoryLineGraph {
 export interface SchedulePreviewData {
   taskId: number
   taskStudyLength: string
+  taskName: string
   courseId: number
   courseName: string
   courseAuthor: string

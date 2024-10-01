@@ -2,6 +2,7 @@ CREATE TABLE tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     schedule_id INTEGER,
     user_id INTEGER,
+    task_name TEXT,
     study_length TEXT, 
     study_date TEXT,  
     course_id INTEGER,

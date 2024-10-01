@@ -29,11 +29,12 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 
 	query := `
 	SELECT 
-	tasks.id AS "Task ID",
-	tasks.study_length AS "Study Length",
-	courses.id AS "Course ID", 
-	courses.name AS "Course Name", 
-	courses.author AS "Course Author"  
+	tasks.id AS "TaskID",
+	tasks.study_length AS "StudyLength",
+	tasks.task_name AS "TaskName",
+	courses.id AS "CourseID", 
+	courses.name AS "CourseName", 
+	courses.author AS "CourseAuthor"  
 	FROM 
 		tasks 
 		CROSS JOIN courses ON tasks.course_id = courses.id 
@@ -41,7 +42,9 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 		tasks.user_id = ? 
 		AND 
     -- -1 AND 0 because of US time conversion i.e. US is one day ahead (I think?)
-		julianday('now') - julianday(tasks.study_date) BETWEEN -1 AND 0;
+		julianday('now') - julianday(tasks.study_date) BETWEEN -1 AND 0
+	LIMIT 
+		3;
 	`
 	var todaysTasks []TaskPreview
 	rows, err := db.Query(query, userIdNum)
@@ -53,21 +56,23 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var taskId int
+		var taskId 					int
 		var taskStudyLength string
-		var courseId int
-		var courseName string
-		var courseAuthor string
+		var taskName 				string
+		var courseId 				int
+		var courseName			string
+		var courseAuthor	  string
 		
 		rows.Scan(
 			&taskId,
 			&taskStudyLength,
+			&taskName,
 			&courseId,
 			&courseName,
 			&courseAuthor,
 		)
 
-		todaysTasks = append(todaysTasks, TaskPreview{TaskID: taskId, TaskStudyLength: taskStudyLength, CourseID: courseId, CourseName: courseName, CourseAuthor: courseAuthor})
+		todaysTasks = append(todaysTasks, TaskPreview{TaskID: taskId, TaskStudyLength: taskStudyLength, TaskName: taskName, CourseID: courseId, CourseName: courseName, CourseAuthor: courseAuthor})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
