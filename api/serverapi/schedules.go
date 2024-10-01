@@ -15,7 +15,7 @@ func GetSchedulePreview(w http.ResponseWriter, res *http.Request) {
 	userIdNum, err := strconv.Atoi(userIdStr)
 	if err != nil {
 		log.Printf("Couldn't convert userIdStr to int %v", err)
-		http.Error(w, "Couldn't conver userIdStr to int", http.StatusInternalServerError)
+		http.Error(w, "Couldn't convert userIdStr to int", http.StatusInternalServerError)
 		return
 	}
 
