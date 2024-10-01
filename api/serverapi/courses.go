@@ -148,6 +148,7 @@ func GetCoursesPreview(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Couldn't open database", http.StatusInternalServerError)
 		return
 	}
+	defer db.Close()
 
 	// TODO: add "pinned" column to db so user can choose which courses are displayed on their dashboard
 	query := `
@@ -165,7 +166,8 @@ func GetCoursesPreview(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Couldn't open database", http.StatusInternalServerError)
 		return
 	}
-
+	defer rows.Close()
+	
 	var threeCourses []Course
 	for rows.Next() {
 		var id		             int
