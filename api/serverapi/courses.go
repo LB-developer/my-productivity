@@ -131,4 +131,70 @@ func GetTotalHours (w http.ResponseWriter, req *http.Request) {
 }
 
 
+func GetCoursesPreview(w http.ResponseWriter, req *http.Request) {
 
+	userIdStr := req.URL.Query().Get("userId")
+
+	userIdNum, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		log.Printf("Couldn't convert userId to num \n%v", err)
+		http.Error(w, "Couldn't convert userId to num", http.StatusInternalServerError)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "../server/db/prod.db")
+	if err != nil {
+		log.Printf("Couldn't connect to database prod.db \n%v", err)
+		http.Error(w, "Couldn't open database", http.StatusInternalServerError)
+		return
+	}
+
+	// TODO: add "pinned" column to db so user can choose which courses are displayed on their dashboard
+	query := `
+	SELECT *
+	FROM courses
+	WHERE
+		user_id = ?
+	LIMIT 
+		3
+	`
+
+	rows, err := db.Query(query, userIdNum)
+	if err != nil {
+		log.Printf("Couldn't query prod.db table: \n%v", err)
+		http.Error(w, "Couldn't open database", http.StatusInternalServerError)
+		return
+	}
+
+	var threeCourses []Course
+	for rows.Next() {
+		var id		             int
+		var userID		         int
+		var name		           string
+		var price		           string
+		var author		         string
+		var link		           string
+		var hoursToComplete		 int
+		var hoursCompleted		 int
+
+		rows.Scan(
+			&id,
+			&userID,
+			&name,		        
+			&price,		        
+			&author,		      
+			&link,		        
+ 			&hoursToComplete,	
+			&hoursCompleted,	
+		)
+
+		threeCourses = append(threeCourses, Course{ID: id, UserID: userID, Name: name, Price: price, Author: author, Link: link, HoursToComplete: hoursToComplete, HoursCompleted: hoursCompleted})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(threeCourses)
+	if err != nil {
+		log.Printf("Failed to encode JSON %v", err)
+		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+	}
+}
