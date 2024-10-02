@@ -39,8 +39,8 @@ export default function Dashboard() {
           <SchedulePreview userId={String(userId)} />
         </Col>
 
-        <Col xs={3} className="bg-success bg-opacity-50">
-          <CoursesPreview />
+        <Col xs={3} className="bg-light rounded-4">
+          <CoursesPreview userId={String(userId)} />
         </Col>
 
         <Col xs={3} className="bg-warning bg-opacity-50">

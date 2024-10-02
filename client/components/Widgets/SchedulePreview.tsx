@@ -10,10 +10,10 @@ export default function SchedulePreview({ userId }: Props) {
 
   if (schedulePreview)
     return (
-      <div className="row pt-4 ms-1">
-        <h2 className="mb-4">Today's Tasks</h2>
+      <div className="row pt-4 ms-1 h-100">
+        <h2 className="mb-3 fs-3">Today's Tasks</h2>
         {/* add seed data, add gap, return proper data */}
-        <ul>
+        <ul className="pt-0">
           {schedulePreview.map((previewItem) => (
             <div key={previewItem.taskId} className="d-flex flex-row">
               <div
@@ -33,7 +33,7 @@ export default function SchedulePreview({ userId }: Props) {
             </div>
           ))}
         </ul>
-        <div className="d-flex flex-row justify-content-end fw-bold gap-2 pe-4 text-primary">
+        <div className="d-flex flex-row justify-content-end fw-bold gap-2 pe-4 text-primary align-items-end ">
           <p>{'View all Tasks '}</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
