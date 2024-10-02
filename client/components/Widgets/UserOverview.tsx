@@ -1,4 +1,4 @@
-import { useGetTotalHoursCompleted } from '../../hooks/Courses/useGetHours'
+import { useGetTotalHoursCompleted } from "../../hooks/Tasks/Tasks"
 
 interface Props {
   userId: number

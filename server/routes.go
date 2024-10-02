@@ -21,11 +21,11 @@ func SetupRoutes() *chi.Mux {
 
 	// Course routes
 	router.Get("/api/v1/courses", serverapi.GetCoursesById)
-	router.Get("/api/v1/courses/hours", serverapi.GetTotalHours)
 	router.Get("/api/v1/courses/preview", serverapi.GetCoursesPreview)
-
+	
 	// Task routes
 	router.Get("/api/v1/tasks/last-30", serverapi.GetLastMonthHours)
+	router.Get("/api/v1/tasks/hours-completed", serverapi.GetTotalHoursCompleted)
 
 	// Schedule routes
 	router.Get("/api/v1/schedules/preview", serverapi.GetSchedulePreview)

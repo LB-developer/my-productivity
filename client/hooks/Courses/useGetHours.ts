@@ -1,19 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
-import {
-  fetchCoursesPreview,
-  fetchTotalHoursCompleted,
-} from '../../../api/clientapi/courses'
-
-export const useGetTotalHoursCompleted = (userId: number) => {
-  return useQuery({
-    queryKey: ['total-hours'],
-    queryFn: () => fetchTotalHoursCompleted(userId),
-  })
-}
+import { useQuery } from "@tanstack/react-query"
+import { fetchCoursesPreview } from "../../../api/clientapi/courses"
 
 export const useGetCoursesPreview = (userId: number) => {
   return useQuery({
-    queryKey: ['courses'],
+    queryKey: ["courses"],
     queryFn: () => fetchCoursesPreview(userId),
   })
 }

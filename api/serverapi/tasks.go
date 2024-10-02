@@ -64,17 +64,17 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	lastThirty.Color = "blue" // color property ^
 	
 	for rows.Next() {
-		var md 		string // month day
-		var minutes float64
+		var monthDay string // MM/DD format
+		var minutes  float64
 
 		err := rows.Scan(
-			&md,
+			&monthDay,
 			&minutes)
 		if err != nil {
 			log.Printf("couldn't scan %v", err)
 		}	
 		
-		lastThirty.Data = append(lastThirty.Data, Coordinates{X: md, Y: math.Round(minutes / 60)})
+		lastThirty.Data = append(lastThirty.Data, Coordinates{X: monthDay, Y: math.Round(minutes / 60)})
 	}
 	lastThirtyGraph = append(lastThirtyGraph, lastThirty)
 
@@ -83,6 +83,61 @@ func GetLastMonthHours(w http.ResponseWriter, req *http.Request) {
 	err = json.NewEncoder(w).Encode(lastThirtyGraph)
 	if err != nil {
 		log.Printf("Failed to encode lastThirtyGraph to JSON \n%v", err)
+		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		return
+	}
+}
+
+
+func GetTotalHoursCompleted (w http.ResponseWriter, req *http.Request) {
+
+	userIdStr := req.URL.Query().Get("userId")
+	if userIdStr == "" {
+		log.Printf("Missing user Id query")
+		http.Error(w, "Missing userId query", http.StatusBadRequest)
+		return
+	}
+	
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		log.Printf("Invalid userId query \n%v", err)
+		http.Error(w, "Invalid userId query", http.StatusBadRequest)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "../server/db/prod.db")
+	if err != nil {
+		log.Printf("Couldn't open database \n%v", err)
+		http.Error(w, "Couldn't connect to database", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	query := `
+	SELECT 
+	SUM(
+		(strftime('%s', study_length) - strftime('%s', "00:00:00")) / 3600 -- seconds to hours
+	)
+	FROM tasks
+	WHERE
+		user_id = ?
+	AND
+		is_completed = 1
+	`
+
+
+	var totalHours int
+	err = db.QueryRow(query, userId).Scan(&totalHours)
+	if err != nil {
+		log.Printf("couldn't query db_table: courses %v", err)
+		http.Error(w, "Couldn't query db_table: courses", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(map[string]int{"totalHours": totalHours})
+	if err != nil {
+		log.Printf("Failed to encode JSON \n%v", err)
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 		return
 	}
