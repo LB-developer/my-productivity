@@ -43,12 +43,13 @@ func UserWidgetInfo (w http.ResponseWriter, req *http.Request) {
 	`
 
 
-rows, err := db.Query(query, userId, userId, userId) // TODO: de-duplicate 
+	rows, err := db.Query(query, userId, userId, userId) // TODO: de-duplicate 
 	if err != nil {
 		log.Printf("Couldn't query database for total hours, courses, projects %v", err)
 		http.Error(w, "Couldn't query database for total hours, courses, projects", http.StatusInternalServerError)
 		return
 	}
+	defer rows.Close()	
 	
 	var userStats UserStats
 	for rows.Next() {
