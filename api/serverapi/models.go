@@ -35,6 +35,12 @@ type UserIDReq struct {
 	UserID 							int 					`json:"userId"`
 }
 
+type UserStats struct {
+	CoursesCount 						int				`json:"coursesCount"`
+	ProjectsCount						int				`json:"projectsCount"`
+	HoursCount 							int				`json:"totalHoursCompleted"`
+}
+
 type Coordinates struct {
 	X 									string 				`json:"x"`
 	Y 									float64 			`json:"y"`

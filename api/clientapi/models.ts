@@ -1,5 +1,7 @@
-export interface UserHours {
-  totalHours: number
+export interface UserWidgetInfo {
+  coursesCount: number
+  projectsCount: number
+  totalHoursCompleted: number
 }
 
 export interface LineCoordinates {

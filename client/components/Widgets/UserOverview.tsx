@@ -1,17 +1,19 @@
-import { useGetTotalHoursCompleted } from "../../hooks/Tasks/Tasks"
+import { useGetUserWidgetInfo } from '../../hooks/Users'
 
 interface Props {
   userId: number
 }
 
 export default function UserOverview({ userId }: Props) {
-  const { data: hours } = useGetTotalHoursCompleted(userId)
+  const { data: info } = useGetUserWidgetInfo(userId)
 
-  if (hours)
+  if (info)
     return (
       <div className="bg-orange-400">
         <p>USER OVERVIEW</p>
-        <p>Hours Completed:{hours.totalHours}</p>
+        <p>Hours Completed: {info.totalHoursCompleted}</p>
+        <p>Courses Count: {info.coursesCount}</p>
+        <p>Projects Count: {info.projectsCount}</p>
       </div>
     )
 }
