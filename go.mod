@@ -1,4 +1,4 @@
-module github.com/POR7ALa/my-productivity
+module productivity 
 
 go 1.23.0
 
