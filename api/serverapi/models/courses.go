@@ -32,40 +32,25 @@ func FetchCoursesById (db *sql.DB, userId UserIDReq) ([]Course, error) {
 	
 	var courses []Course
 	for rows.Next() {
-		var id 					int
-		var userId 				int
-		var name            	string
-		var price           	string
-		var author          	string
-		var link            	string
-		var hoursToComplete		int   
-		var hoursCompleted  	int   
 
+		var course Course
 		err := rows.Scan(
-			&id, 
-			&userId,
-			&name, 
-			&price,
-			&author,
-			&link,
-			&hoursToComplete,
-			&hoursCompleted,
+			&course.ID, 
+			&course.UserID,
+			&course.Name, 
+			&course.Price,
+			&course.Author,
+			&course.Link,
+			&course.HoursToComplete,
+			&course.HoursCompleted,
 			) 
 			
-			if err != nil {
-				log.Printf("Couldn't scan courses %v", err)
-				return nil, err
-			}
+		if err != nil {
+			log.Printf("Couldn't scan courses %v", err)
+			return nil, err
+		}
 			
-			courses = append(courses, Course{
-				ID: id, 
-				UserID: userId, 
-				Name: name, 
-				Price: price, 
-				Author: author, 
-				Link: link, 
-				HoursToComplete: hoursToComplete, 
-				HoursCompleted: hoursCompleted})
+		courses = append(courses, course)
 	}
 
 	return courses, nil
@@ -91,31 +76,24 @@ func FetchCoursesPreview(db *sql.DB, userId int) ([]Course, error) {
 
 	var threeCourses []Course
 	for rows.Next() {
-		var id int
-		var userID int
-		var name string
-		var price string
-		var author string
-		var link string
-		var hoursToComplete int
-		var hoursCompleted int
 
+		var course Course
 		err := rows.Scan(
-			&id,
-			&userID,
-			&name,
-			&price,
-			&author,
-			&link,
-			&hoursToComplete,
-			&hoursCompleted,
+			&course.ID, 
+			&course.UserID,
+			&course.Name, 
+			&course.Price,
+			&course.Author,
+			&course.Link,
+			&course.HoursToComplete,
+			&course.HoursCompleted,
 		)
 		if err != nil {
 			log.Printf("Couldn't scan courses %v", err)
 			return nil, err
 		}
 
-		threeCourses = append(threeCourses, Course{ID: id, UserID: userID, Name: name, Price: price, Author: author, Link: link, HoursToComplete: hoursToComplete, HoursCompleted: hoursCompleted})
+		threeCourses = append(threeCourses, course) 
 	}
 
 	return threeCourses, nil
