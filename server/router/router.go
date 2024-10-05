@@ -1,15 +1,14 @@
-package server
+package router
 
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 
-	"github.com/POR7ALa/my-productivity/api/serverapi"
+	"productivity/api/serverapi"
 )
 
 func SetupRoutes() *chi.Mux {
 	router := chi.NewRouter()
-
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
