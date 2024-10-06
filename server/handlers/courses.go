@@ -1,16 +1,16 @@
-package serverapi
+package handlers
 
 import (
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
-	"productivity/api/serverapi/models"
 	server "productivity/server/db"
+	"productivity/server/models"
 	"strconv"
 )
 
-func GetCoursesById(w http.ResponseWriter, req *http.Request) {
+func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
@@ -36,7 +36,7 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	courses, err := models.FetchCoursesById(db, userId)
+	courses, err := models.GetCoursesById(db, userId)
 	if err != nil {
 		log.Printf("Could not fetch courses: %s\n %v","courses", err)
 		http.Error(w, "Could not fetch courses", http.StatusInternalServerError)
@@ -53,8 +53,7 @@ func GetCoursesById(w http.ResponseWriter, req *http.Request) {
 }
 
 
-
-func GetCoursesPreview(w http.ResponseWriter, req *http.Request) {
+func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
 
 	userIdStr := req.URL.Query().Get("userId")
 

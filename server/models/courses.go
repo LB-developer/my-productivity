@@ -16,7 +16,7 @@ type Course struct {
 	HoursCompleted  int    `json:"hoursCompleted"`
 }
 
-func FetchCoursesById (db *sql.DB, userId UserIDReq) ([]Course, error) {
+func GetCoursesById (db *sql.DB, userId UserIDReq) ([]Course, error) {
 	
 	query := `
 	SELECT *
