@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
-import { fetchSchedulePreview } from '../../../api/clientapi/schedule'
+import { useQuery } from "@tanstack/react-query"
+import { fetchTodaysTasks } from "../../../api/clientapi/tasks"
 
-export function useGetSchedulePreview(userId: string) {
+export function useGetTodaysTasks(userId: string) {
   return useQuery({
-    queryKey: ['schedule-preview'],
-    queryFn: () => fetchSchedulePreview(userId),
+    queryKey: ["schedule-preview"],
+    queryFn: () => fetchTodaysTasks(userId),
   })
 }
