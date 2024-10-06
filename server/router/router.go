@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 
-	"productivity/api/serverapi"
+	"productivity/server/handlers"
 )
 
 func SetupRoutes() *chi.Mux {
@@ -19,20 +19,18 @@ func SetupRoutes() *chi.Mux {
 }))
 
 	// Course routes
-	router.Get("/api/v1/courses", serverapi.GetCoursesById)
-	router.Get("/api/v1/courses/preview", serverapi.GetCoursesPreview)
+	router.Get("/api/v1/courses", handlers.GetCoursesByIdHandler)
+	router.Get("/api/v1/courses/preview", handlers.GetCoursesPreviewHandler)
 	
 	// Task routes
-	router.Get("/api/v1/tasks/last-30", serverapi.GetLastMonthHours)
+	router.Get("/api/v1/tasks/last-30", handlers.GetLastMonthHoursHandler)
+	router.Get("/api/v1/tasks/preview", handlers.GetTodaysTasksHandler)
 
 	// User routes
-	router.Get("/api/v1/users/info", serverapi.UserWidgetInfo)
-
-	// Schedule routes
-	router.Get("/api/v1/schedules/preview", serverapi.GetSchedulePreview)
+	router.Get("/api/v1/users/info", handlers.UserWidgetInfoHandler)
 
 	// Technology routes
-	router.Get("/api/v1/technologies", serverapi.GetTechnologiesHandler)
+	router.Get("/api/v1/technologies", handlers.GetTechnologiesHandler)
 	
 	return router
 }
