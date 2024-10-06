@@ -3,7 +3,7 @@ import MonthlyHours from '../../components/Widgets/MonthlyHours'
 import ActivityPreview from '../../components/Widgets/ActivityPreview'
 import CurrentProgress from '../../components/Widgets/CurrentProgress'
 import MonthlySpend from '../../components/Widgets/MonthlySpend'
-import SchedulePreview from '../../components/Widgets/SchedulePreview'
+import TodaysTasks from '../../components/Widgets/TodaysTasks'
 import TotalSpend from '../../components/Widgets/TotalSpend'
 import UserOverview from '../../components/Widgets/UserOverview'
 import { Container, Row, Col } from 'react-bootstrap'
@@ -36,7 +36,7 @@ export default function Dashboard() {
         </Col>
 
         <Col xs={3} className="offset-2 bg-light rounded-4">
-          <SchedulePreview userId={String(userId)} />
+          <TodaysTasks userId={String(userId)} />
         </Col>
 
         <Col xs={3} className="bg-light rounded-4">
