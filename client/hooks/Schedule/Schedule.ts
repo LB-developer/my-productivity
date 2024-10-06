@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchTodaysTasks } from "../../../api/clientapi/tasks"
+import { fetchTodaysTasks } from "../../api/tasks"
 
 export function useGetTodaysTasks(userId: string) {
   return useQuery({

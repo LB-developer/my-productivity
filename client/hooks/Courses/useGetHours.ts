@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchCoursesPreview } from "../../../api/clientapi/courses"
+import { fetchCoursesPreview } from "../../api/courses"
 
 export const useGetCoursesPreview = (userId: number) => {
   return useQuery({
