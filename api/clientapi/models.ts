@@ -15,7 +15,7 @@ export interface ThirtyHistoryLineGraph {
   data: LineCoordinates[]
 }
 
-export interface SchedulePreviewData {
+export interface TodaysTasksData {
   taskId: number
   taskStudyLength: string
   taskName: string

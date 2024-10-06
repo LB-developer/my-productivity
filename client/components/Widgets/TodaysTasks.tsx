@@ -1,32 +1,32 @@
-import { Card } from 'react-bootstrap'
-import { useGetSchedulePreview } from '../../hooks/Schedule/Schedule'
+import { Card } from "react-bootstrap"
+import { useGetTodaysTasks } from "../../hooks/Schedule/Schedule"
 
 interface Props {
   userId: string
 }
 
-export default function SchedulePreview({ userId }: Props) {
-  const { data: schedulePreview } = useGetSchedulePreview(userId)
+export default function TodaysTasks({ userId }: Props) {
+  const { data: todaysTasks } = useGetTodaysTasks(userId)
 
-  if (schedulePreview)
+  if (todaysTasks)
     return (
       <div className="row pt-4 ms-1 h-100">
         <h2 className="mb-3 fs-3">Today's Tasks</h2>
         {/* add seed data, add gap, return proper data */}
         <ul className="pt-0">
-          {schedulePreview.map((previewItem) => (
-            <div key={previewItem.taskId} className="d-flex flex-row">
+          {todaysTasks.map((task) => (
+            <div key={task.taskId} className="d-flex flex-row">
               <div
                 className="bg-primary border-0 mt-2 ms-1"
-                style={{ width: '0.3em', height: '2.5em' }}
+                style={{ width: "0.3em", height: "2.5em" }}
               ></div>
-              <Card border="light" bg={'light'} text={'dark'} className="">
+              <Card border="light" bg={"light"} text={"dark"} className="">
                 <Card.Body className="d-flex flex-column mb-0 pb-1 pt-1">
                   <Card.Title className="mb-0 fs-6 fw-bold mt-1">
-                    {previewItem.taskName}
+                    {task.taskName}
                   </Card.Title>
                   <Card.Text className="fw-light">
-                    {previewItem.taskStudyLength}
+                    {task.taskStudyLength}
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -34,11 +34,11 @@ export default function SchedulePreview({ userId }: Props) {
           ))}
         </ul>
         <div className="d-flex flex-row justify-content-end fw-bold gap-2 pe-4 text-primary align-items-end ">
-          <p>{'View all Tasks '}</p>
+          <p>{"View all Tasks "}</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="mb-3"
-            style={{ width: '1.5em' }}
+            style={{ width: "1.5em" }}
             viewBox="0 0 512 512"
           >
             <path
