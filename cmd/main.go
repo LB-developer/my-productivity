@@ -1,9 +1,15 @@
 package main
 
-import "github.com/POR7ALa/my-productivity/server"
+import (
+	"fmt"
+	"net/http"
+	"productivity/server/router"
+)
 
 
 func main() {
-	server.StartServer()
+	r := router.SetupRoutes()
+	fmt.Println("Starting Server 8080")
+    http.ListenAndServe(":8080", r)
 }
 
