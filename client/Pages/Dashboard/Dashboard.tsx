@@ -1,12 +1,12 @@
-import CoursesPreview from '../../components/Widgets/CoursesPreview'
-import MonthlyHours from '../../components/Widgets/MonthlyHours'
-import ActivityPreview from '../../components/Widgets/ActivityPreview'
-import CurrentProgress from '../../components/Widgets/CurrentProgress'
-import MonthlySpend from '../../components/Widgets/MonthlySpend'
-import TodaysTasks from '../../components/Widgets/TodaysTasks'
-import TotalSpend from '../../components/Widgets/TotalSpend'
-import UserOverview from '../../components/Widgets/UserOverview'
-import { Container, Row, Col } from 'react-bootstrap'
+import CoursesPreview from "../../components/Widgets/CoursesPreview"
+import MonthlyHours from "../../components/Widgets/MonthlyHours"
+import ActivityPreview from "../../components/Widgets/ActivityPreview"
+import CurrentProgress from "../../components/Widgets/CurrentProgress"
+import MonthlySpend from "../../components/Widgets/MonthlySpend"
+import TodaysTasks from "../../components/Widgets/TodaysTasks"
+import NewStudySession from "../../components/Widgets/NewStudySession"
+import UserOverview from "../../components/Widgets/UserOverview"
+import { Container, Row, Col } from "react-bootstrap"
 
 export default function Dashboard() {
   const userId: number = 1
@@ -32,7 +32,7 @@ export default function Dashboard() {
         </Col>
 
         <Col xs={3} className="bg-primary bg-opacity-25">
-          <TotalSpend />
+          <NewStudySession />
         </Col>
 
         <Col xs={3} className="offset-2 bg-light rounded-4">
@@ -57,5 +57,4 @@ export default function Dashboard() {
       </Row>
     </Container>
   )
-};
-
+}
