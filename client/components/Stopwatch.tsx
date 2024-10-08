@@ -41,18 +41,23 @@ export default function Stopwatch({
             return lastTime
           })
         }
-      }, 500)
+      }, 500) // TODO: when stopwatch is complete, change to 1000 for accurate counting
       return () => clearInterval(interval)
     }
   }, [isRunning, studySessionTimeElapsed, setStudySessionTimeElapsed])
 
   return (
-    <Button className="d-flex flex-row justify-content-center h-100" size="lg">
+    <Button
+      variant="outline-primary"
+      className="d-flex flex-row justify-content-center h-100"
+      size="lg"
+    >
       {Array.from(studySessionTimeElapsed.entries()).map(
         ([time, value], index) => {
           return (
             <div key={time}>
               <span>
+                {/* print the stopwatch time as HH:MM:SS */}
                 {String(value).padStart(2, "0")}
                 {index < 2 && ":"}
               </span>

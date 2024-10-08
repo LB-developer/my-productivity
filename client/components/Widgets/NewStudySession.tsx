@@ -25,7 +25,7 @@ export default function NewStudySession() {
   }
 
   return (
-    <div className="d-flex flex-column gap-2">
+    <div className="d-flex flex-column gap-1 p-3">
       <h4>New Study Session</h4>
       <Stopwatch
         studySessionTimeElapsed={studySessionTimeElapsed}
@@ -33,17 +33,21 @@ export default function NewStudySession() {
         isRunning={isRunning}
       />
       {isRunning ? (
-        <>
-          <Button className="w-100" onClick={() => setIsRunning(false)}>
+        <div className="d-flex flex-row justify-content-center gap-1">
+          <Button
+            variant="outline-primary"
+            className="flex-grow-1"
+            onClick={() => setIsRunning(false)}
+          >
             <FontAwesomeIcon icon={faPause} />
           </Button>
-
+          {/* TODO: Send user to task viewer */}
           <Button onClick={() => setIsRunning(false)}>
             Open in task viewer
           </Button>
-        </>
+        </div>
       ) : (
-        <div className="d-flex justify-content-between">
+        <div className="d-flex flex-row justify-content-center gap-1">
           {/* 
               If a session has been started and not 'stopped' (different from pause), 
               studySessionTimeElapsed will have a current value greater than one which we use
@@ -54,12 +58,16 @@ export default function NewStudySession() {
               all other values being default.
           */}
           {Math.max(...Array.from(studySessionTimeElapsed.values())) > 0 ? (
-            <Button className="w-100" onClick={() => setIsRunning(true)}>
+            <Button
+              variant="outline-primary"
+              className="w-100"
+              onClick={() => setIsRunning(true)}
+            >
               <FontAwesomeIcon icon={faPlay} />
             </Button>
           ) : (
             <Button
-              className="w-100"
+              className=""
               onClick={() => (
                 setIsRunning(true), setStudySessionTimeElapsed(startingTime)
               )}
@@ -67,10 +75,14 @@ export default function NewStudySession() {
               <FontAwesomeIcon icon={faPlay} />
             </Button>
           )}
-          <Button className="w-100" onClick={handleResetSession}>
+          <Button
+            variant="outline-primary"
+            className=""
+            onClick={handleResetSession}
+          >
             Reset
           </Button>
-          <Button>
+          <Button variant="outline-primary">
             <FontAwesomeIcon icon={faFloppyDisk} />
           </Button>
         </div>
