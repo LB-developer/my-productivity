@@ -8,12 +8,12 @@ import {
   faTableColumns,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react"
+// import { useState } from "react"
 import { Nav, NavItem } from "react-bootstrap"
 import { NavLink } from "react-router-dom"
 
 export default function Sidebar() {
-  const [currentPage, setCurrentPage] = useState("")
+  // const [currentPage, setCurrentPage] = useState("")
 
   // TODO: replace navlinks to dynamic routes based on the user
   return (
@@ -50,7 +50,9 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faChartLine}
               />
-              <span className="nav-word fs-5 text-dark">Activity</span>
+              <span className="nav-word fs-5 text-dark  fw-medium text-opacity-25 ">
+                Activity
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -63,7 +65,9 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faBook}
               />
-              <span className="nav-word fs-5 text-dark">Courses</span>
+              <span className="nav-word fs-5 fw-medium text-dark text-opacity-50">
+                Courses
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -76,7 +80,9 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faDiagramProject}
               />
-              <span className="nav-word fs-5 text-dark">Projects</span>
+              <span className="nav-word fs-5 fw-normal text-dark">
+                Projects
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -89,7 +95,7 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faListCheck}
               />
-              <span className="nav-word fs-5 text-dark">Tasks</span>
+              <span className="nav-word fs-5 fw-normal text-dark">Tasks</span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -102,7 +108,9 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faCalendar}
               />
-              <span className="nav-word fs-5 text-dark">Schedule</span>
+              <span className="nav-word fs-5 fw-normal text-dark">
+                Schedule
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -115,7 +123,9 @@ export default function Sidebar() {
                 style={{ maxWidth: "1.5rem" }}
                 icon={faGear}
               />
-              <span className="nav-word fs-5 text-dark">Settings</span>
+              <span className="nav-word fs-5 fw-normal text-dark">
+                Settings
+              </span>
             </NavLink>
           </NavItem>
         </ul>
