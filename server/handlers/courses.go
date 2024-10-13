@@ -5,13 +5,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
+
 	server "productivity/server/db"
 	"productivity/server/models"
-	"strconv"
 )
 
 func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
-
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		log.Printf("Unable to read request body \n%v", err)
@@ -19,14 +19,13 @@ func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	db, err := server.InitDB(w) 
+	db, err := server.InitDB(w)
 	if err != nil {
 		log.Printf("Couldn't open database \n%v", err)
 		http.Error(w, "Couldn't connect to database", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
-
 
 	var userId models.UserIDReq
 	err = json.Unmarshal(body, &userId)
@@ -38,13 +37,13 @@ func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 
 	courses, err := models.GetCoursesById(db, userId)
 	if err != nil {
-		log.Printf("Could not fetch courses: %s\n %v","courses", err)
+		log.Printf("Could not fetch courses: %s\n %v", "courses", err)
 		http.Error(w, "Could not fetch courses", http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
-    err = json.NewEncoder(w).Encode(courses)
+	err = json.NewEncoder(w).Encode(courses)
 	if err != nil {
 		log.Printf("Failed to encode JSON \n%v", err)
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
@@ -52,9 +51,7 @@ func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-
 func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
-
 	userIdStr := req.URL.Query().Get("userId")
 
 	userIdNum, err := strconv.Atoi(userIdStr)
@@ -63,15 +60,15 @@ func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Couldn't convert userId to num", http.StatusInternalServerError)
 		return
 	}
-	
-	db, err := server.InitDB(w)	
+
+	db, err := server.InitDB(w)
 	if err != nil {
 		log.Printf("Couldn't connect to database prod.db \n%v", err)
 		http.Error(w, "Couldn't open database", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
-	
+
 	coursePreview, err := models.FetchCoursesPreview(db, userIdNum)
 	if err != nil {
 		log.Printf("Couldn't fetch courses preview: \n%v", err)
