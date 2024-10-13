@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"log"
 )
 
 type TaskPreview struct {
@@ -11,6 +12,17 @@ type TaskPreview struct {
 	CourseID        int    `json:"courseId"`
 	CourseName      string `json:"courseName"`
 	CourseAuthor    string `json:"courseAuthor"`
+}
+
+type Task struct {
+	TaskID          int    `json:"taskId"`
+	TaskStudyLength string `json:"taskStudyLength"`
+	TaskStudyDate   string `json:"taskStudyDate"`
+	TaskName        string `json:"taskName"`
+	CourseID        int    `json:"courseId"`
+	CourseName      string `json:"courseName"`
+	CourseAuthor    string `json:"courseAuthor"`
+	CourseLink      string `json:"courseLink"`
 }
 
 type LastThirtyInGraph struct {
@@ -107,4 +119,72 @@ func GetSchedulePreview(db *sql.DB, userId int) ([]TaskPreview, error) {
 	}
 
 	return todaysTasks, nil
+}
+
+func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
+	query := `
+	SELECT tasks.id, tasks.study_length, tasks.study_date, tasks.task_name, courses.id, courses.name, courses.author, courses.link
+	FROM tasks
+	CROSS JOIN courses ON tasks.user_id = courses.user_id
+	WHERE tasks.user_id = ?
+	AND is_completed = ?
+	`
+	// get completed tasks
+	rows, err := db.Query(query, userId, userId, 1)
+	if err != nil {
+		log.Printf("Couldn't query db_table tasks courses %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var completedTasks []Task
+	for rows.Next() {
+		var completedTask Task
+		if err := rows.Scan(
+			&completedTask.TaskID,
+			&completedTask.TaskStudyLength,
+			&completedTask.TaskStudyDate,
+			&completedTask.TaskName,
+			&completedTask.CourseID,
+			&completedTask.CourseName,
+			&completedTask.CourseAuthor,
+			&completedTask.CourseLink,
+		); err != nil {
+			return nil, err
+		}
+
+		completedTasks = append(completedTasks, completedTask)
+	}
+
+	// get incomplete tasks
+	incompletedRows, err := db.Query(query, userId, userId, 0)
+	if err != nil {
+		log.Printf("Couldn't query db_table tasks courses %v", err)
+		return nil, err
+	}
+	defer incompletedRows.Close()
+
+	var incompleteTasks []Task
+	for incompletedRows.Next() {
+		var incompleteTask Task
+		if err := incompletedRows.Scan(
+			&incompleteTask.TaskID,
+			&incompleteTask.TaskStudyLength,
+			&incompleteTask.TaskStudyDate,
+			&incompleteTask.TaskName,
+			&incompleteTask.CourseID,
+			&incompleteTask.CourseName,
+			&incompleteTask.CourseAuthor,
+			&incompleteTask.CourseLink,
+		); err != nil {
+			return nil, err
+		}
+
+		incompleteTasks = append(incompleteTasks, incompleteTask)
+	}
+
+	var allTasks [][]Task
+	allTasks = append(allTasks, completedTasks, incompleteTasks)
+
+	return allTasks, nil
 }
