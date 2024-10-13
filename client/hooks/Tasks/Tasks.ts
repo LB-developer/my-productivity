@@ -1,9 +1,16 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchLastThirtyMinutes } from "../../api/tasks"
+import { fetchLastThirtyMinutes, fetchAllTasks } from "../../api/tasks"
+
+export function useGetUserTasks(userId: string) {
+  return useQuery({
+    queryKey: ["tasks"],
+    queryFn: () => fetchAllTasks(userId),
+  })
+}
 
 export function useGetLastThirty(userId: string) {
   return useQuery({
-    queryKey: ["last-30"],
+    queryKey: ["tasks"],
     queryFn: () => fetchLastThirtyMinutes(userId),
   })
 }
