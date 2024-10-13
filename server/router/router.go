@@ -23,7 +23,7 @@ func SetupRoutes() *chi.Mux {
 	router.Get("/api/v1/courses/preview", handlers.GetCoursesPreviewHandler)
 
 	// Task routes
-	router.Get("/api/v1/tasks", handlers.GetAllTasks)
+	router.Get("/api/v1/tasks", handlers.GetAllTasksHandler)
 	router.Get("/api/v1/tasks/last-30", handlers.GetLastMonthHoursHandler)
 	router.Get("/api/v1/tasks/preview", handlers.GetTodaysTasksHandler)
 
@@ -35,4 +35,3 @@ func SetupRoutes() *chi.Mux {
 
 	return router
 }
-
