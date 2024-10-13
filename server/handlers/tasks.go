@@ -1,16 +1,17 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
-	"productivity/server/models"
 	"strconv"
+
+	server "productivity/server/db"
+	"productivity/server/models"
 )
 
 func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
-	db, err := sql.Open("sqlite3", "../server/db/prod.db")
+	db, err := server.InitDB(w)
 	if err != nil {
 		log.Printf("Couldn't open prod.db %v", err)
 		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
@@ -54,7 +55,7 @@ func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "../server/db/prod.db")
+	db, err := server.InitDB(w)
 	if err != nil {
 		log.Printf("Couldn't open prod.db %v", err)
 		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
@@ -71,4 +72,37 @@ func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todaysTasks)
+}
+
+func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
+	userStr := req.URL.Query().Get("userId")
+	if userStr == "" {
+		http.Error(w, "Missing userId query", http.StatusBadRequest)
+		return
+	}
+
+	userIdNum, err := strconv.Atoi(userStr)
+	if err != nil {
+		log.Printf("Couldn't convert userId to num %v", err)
+		http.Error(w, "Couldn't convert userId to num", http.StatusInternalServerError)
+		return
+	}
+
+	db, err := server.InitDB(w)
+	if err != nil {
+		log.Printf("Couldn't open prod.db %v", err)
+		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	tasks, err := models.GetAllTasks(db, userIdNum)
+	if err != nil {
+		log.Printf("Couldn't retrieve all tasks: \n%v", err)
+		http.Error(w, "Couldn't retrieve all tasks", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tasks)
 }
