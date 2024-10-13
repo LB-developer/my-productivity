@@ -24,6 +24,17 @@ export interface TodaysTasksData {
   courseAuthor: string
 }
 
+export interface TaskData {
+  taskId: number
+  taskStudyLength: string
+  taskStudyDate: string
+  taskName: string
+  courseId: number
+  courseName: string
+  courseAuthor: string
+  courseLink: string
+}
+
 export interface Course {
   id: number
   userId: number
