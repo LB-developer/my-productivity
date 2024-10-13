@@ -15,14 +15,15 @@ func SetupRoutes() *chi.Mux {
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
-		MaxAge:           300, 
-}))
+		MaxAge:           300,
+	}))
 
 	// Course routes
 	router.Get("/api/v1/courses", handlers.GetCoursesByIdHandler)
 	router.Get("/api/v1/courses/preview", handlers.GetCoursesPreviewHandler)
-	
+
 	// Task routes
+	router.Get("/api/v1/tasks", handlers.GetAllTasks)
 	router.Get("/api/v1/tasks/last-30", handlers.GetLastMonthHoursHandler)
 	router.Get("/api/v1/tasks/preview", handlers.GetTodaysTasksHandler)
 
@@ -31,6 +32,7 @@ func SetupRoutes() *chi.Mux {
 
 	// Technology routes
 	router.Get("/api/v1/technologies", handlers.GetTechnologiesHandler)
-	
+
 	return router
 }
+
