@@ -123,14 +123,16 @@ func GetSchedulePreview(db *sql.DB, userId int) ([]TaskPreview, error) {
 
 func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	query := `
-	SELECT tasks.id, tasks.study_length, tasks.study_date, tasks.task_name, courses.id, courses.name, courses.author, courses.link
+	SELECT tasks.id, tasks.study_length, tasks.study_date, tasks.task_name, 
+	COALESCE(courses.id,0) AS course_id, COALESCE(courses.name, '') AS course_name, 
+	COALESCE(courses.author, '') AS course_author, COALESCE(courses.link, '') AS course_link
 	FROM tasks
-	CROSS JOIN courses ON tasks.user_id = courses.user_id
+	LEFT JOIN courses ON tasks.course_id = courses.id
 	WHERE tasks.user_id = ?
-	AND is_completed = ?
+	AND tasks.is_completed = ?
 	`
 	// get completed tasks
-	rows, err := db.Query(query, userId, userId, 1)
+	rows, err := db.Query(query, userId, 1)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
@@ -157,7 +159,7 @@ func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	}
 
 	// get incomplete tasks
-	incompletedRows, err := db.Query(query, userId, userId, 0)
+	incompletedRows, err := db.Query(query, userId, 0)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
