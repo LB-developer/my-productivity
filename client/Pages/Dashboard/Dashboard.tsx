@@ -7,12 +7,16 @@ import TodaysTasks from "../../components/Widgets/TodaysTasks"
 import NewStudySession from "../../components/Widgets/NewStudySession"
 import UserOverview from "../../components/Widgets/UserOverview"
 import { Container, Row, Col } from "react-bootstrap"
+import { Helmet } from "react-helmet"
 
 export default function Dashboard() {
   const userId: number = 1
 
   return (
     <div className="d-flex flex-row gap-2 bg-secondary bg-opacity-25">
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <Container fluid className="bg-secondary bg-opacity-10 min-vh-100">
         <Col className="flex-grow-1"></Col>
         <Row className="gap-3 gy-2">

@@ -1,5 +1,11 @@
-
+import { Helmet } from "react-helmet"
 
 export default function Settings() {
-  return <p>Settings Page</p>
+  return (
+    <>
+      <Helmet>
+        <title>Settings</title>
+      </Helmet>
+      <p>Settings Page</p>
+    </>)
 }

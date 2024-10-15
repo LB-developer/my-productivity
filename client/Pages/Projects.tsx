@@ -1,5 +1,13 @@
+import { Helmet } from "react-helmet";
 
 
 export default function Projects() {
-  return <p>Projects Page</p>
+  return (
+    <>
+      <Helmet>
+        <title>Projects</title>
+      </Helmet>
+      <p>Projects Page</p>
+    </>
+  )
 }

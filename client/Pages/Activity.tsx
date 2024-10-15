@@ -1,10 +1,14 @@
-import React from "react";
-
+import { Helmet } from "react-helmet";
 
 export default function ActivityPage() {
 
   return (
-    <p>Activity Page</p>
+    <>
+      <Helmet>
+        <title>Activity</title>
+      </Helmet>
+      <p>Activity Page</p>
+    </>
   )
 
 }
