@@ -10,7 +10,7 @@ export function useGetUserTasks(userId: string) {
 
 export function useGetLastThirty(userId: string) {
   return useQuery({
-    queryKey: ["tasks"],
+    queryKey: ["thirtyDayTaskHours"],
     queryFn: () => fetchLastThirtyMinutes(userId),
   })
 }
