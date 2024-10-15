@@ -11,8 +11,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Nav, NavItem } from "react-bootstrap"
 import { NavLink, } from "react-router-dom"
 
+const navPosition = "nav-link d-flex flex-row gap-3 align-items-center"
+const activeLink = "nav-word text-primary"
+const inactiveLink = "nav-word text-dark text-opacity-25"
+
 export default function Sidebar() {
 
+  // className="nav-link d-flex flex-row gap-3 align-items-center"
   // TODO: replace navlinks to dynamic routes based on the user
   return (
     <div className="d-flex flex-column w-25 bg-light bg-opacity-75 p-5 gap-5">
@@ -26,14 +31,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
-                className="fa-fw me-2"
+                className=" fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faTableColumns}
               />
-              <span className="nav-word fs-5 text-dark text-dark">
+              <span className="fs-5">
                 Dashboard
               </span>
             </NavLink>
@@ -41,14 +48,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/activity"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faChartLine}
               />
-              <span className="nav-word fs-5 text-dark  fw-medium text-opacity-25 ">
+              <span className="fs-5 ">
                 Activity
               </span>
             </NavLink>
@@ -56,14 +65,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/courses"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faBook}
               />
-              <span className="nav-word fs-5 fw-medium text-dark text-opacity-50">
+              <span className="fs-5">
                 Courses
               </span>
             </NavLink>
@@ -71,14 +82,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/projects"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faDiagramProject}
               />
-              <span className="nav-word fs-5 fw-normal text-dark">
+              <span className="fs-5">
                 Projects
               </span>
             </NavLink>
@@ -86,14 +99,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to={"/tasks"}
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faListCheck}
               />
-              <span className="nav-word fs-5 fw-normal text-dark">
+              <span className="fs-5">
                 Tasks
               </span>
             </NavLink>
@@ -101,14 +116,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/schedule"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faCalendar}
               />
-              <span className="nav-word fs-5 fw-normal text-dark">
+              <span className="fs-5">
                 Schedule
               </span>
             </NavLink>
@@ -116,14 +133,16 @@ export default function Sidebar() {
           <NavItem>
             <NavLink
               to="/settings"
-              className="nav-link d-flex flex-row gap-3 align-items-center"
+              className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
+              }
             >
               <FontAwesomeIcon
                 className="fa-fw me-2"
                 style={{ maxWidth: "1.5rem" }}
                 icon={faGear}
               />
-              <span className="nav-word fs-5 fw-normal text-dark">
+              <span className="fs-5">
                 Settings
               </span>
             </NavLink>
