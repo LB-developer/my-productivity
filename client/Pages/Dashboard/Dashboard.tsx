@@ -6,7 +6,6 @@ import MonthlySpend from "../../components/Widgets/MonthlySpend"
 import TodaysTasks from "../../components/Widgets/TodaysTasks"
 import NewStudySession from "../../components/Widgets/NewStudySession"
 import UserOverview from "../../components/Widgets/UserOverview"
-import Sidebar from "../../components/Sidebar"
 import { Container, Row, Col } from "react-bootstrap"
 
 export default function Dashboard() {
@@ -14,7 +13,6 @@ export default function Dashboard() {
 
   return (
     <div className="d-flex flex-row gap-2 bg-secondary bg-opacity-25">
-      <Sidebar />
       <Container fluid className="bg-secondary bg-opacity-10 min-vh-100">
         <Col className="flex-grow-1"></Col>
         <Row className="gap-3 gy-2">
