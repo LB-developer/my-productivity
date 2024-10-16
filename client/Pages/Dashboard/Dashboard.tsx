@@ -6,6 +6,7 @@ import MonthlySpend from "../../components/Widgets/MonthlySpend"
 import TodaysTasks from "../../components/Widgets/TodaysTasks"
 import NewStudySession from "../../components/Widgets/NewStudySession"
 import UserOverview from "../../components/Widgets/UserOverview"
+import SearchBar from "../../components/SearchBar"
 import { Container, Row, Col } from "react-bootstrap"
 import { Helmet } from "react-helmet"
 
@@ -13,20 +14,24 @@ export default function Dashboard() {
   const userId: number = 1
 
   return (
-    <div className="d-flex flex-row gap-2 bg-secondary bg-opacity-25">
+    <div className="bg-secondary bg-opacity-25 ">
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      <Container fluid className="bg-secondary bg-opacity-10 min-vh-100">
-        <Col className="flex-grow-1"></Col>
+      <Container fluid className="min-vh-100">
         <Row className="gap-3 gy-2">
           <Row className="gap-3 gy-2">
             {/* Header Section */}
-            <Col xs={12} className="d-flex flex-column justify-content-center">
+            <Col xs={7} className="d-flex flex-column justify-content-center">
               <p className="mb-0 mt-4">Welcome to your,</p>
-              <h2 className="fw-bold display-4">Productivity Dashboard</h2>
+              <h2 className="fw-bold display-6">Productivity Dashboard</h2>
             </Col>
-            <Col className="bg-light rounded-4">
+            <Col xs={4} className=" ms-auto mt-auto bg-light rounded-4">
+              <SearchBar />
+            </Col>
+          </Row>
+          <Row className="gap-3 gy-2">
+            <Col className="bg-light ms-3 rounded-4">
               <MonthlyHours userId={String(userId)} />
             </Col>
 
@@ -39,7 +44,7 @@ export default function Dashboard() {
             </Col>
           </Row>
           <Row className="gap-3 gy-2">
-            <Col className="bg-light rounded-4">
+            <Col className="bg-light ms-3 rounded-4">
               <TodaysTasks userId={String(userId)} />
             </Col>
 
@@ -51,12 +56,12 @@ export default function Dashboard() {
               <ActivityPreview />
             </Col>
           </Row>
-          <Row className="">
-            <Col xs={6} className="bg-primary bg-opacity-50">
+          <Row className="gap-3 gy-2 ">
+            <Col xs={6} className="bg-primary ms-3 bg-opacity-50 h-100">
               <CurrentProgress />
             </Col>
 
-            <Col xs={6} className="bg-warning bg-opacity-75">
+            <Col className="bg-warning bg-opacity-75">
               <UserOverview userId={userId} />
             </Col>
           </Row>
