@@ -20,7 +20,7 @@ export default function Sidebar() {
   // className="nav-link d-flex flex-row gap-3 align-items-center"
   // TODO: replace navlinks to dynamic routes based on the user
   return (
-    <div className="d-flex flex-column w-25 bg-light bg-opacity-75 p-5 gap-5">
+    <div className="d-flex flex-column bg-light bg-opacity-75 p-5 gap-5">
       <div className="d-flex align-items-center">
         <NavLink to="/">
           <span>Productiv</span>
