@@ -1,12 +1,15 @@
 import { Table } from "react-bootstrap";
 import { useGetUserTasks } from "../hooks/Tasks/Tasks"
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Tasks() {
 
   // TODO: replace "1" with dynamically attained userId
   const { data: tasks, isLoading, isError, error } = useGetUserTasks("1");
+
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <p>Loading</p>
@@ -37,7 +40,12 @@ export default function Tasks() {
             <tbody>
               {tasks[0].map(task =>
               (
-                <tr>
+                <tr role="button" tabIndex={0} onClick={() => navigate(`/tasks/${task.taskId}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      navigate(`/tasks/${task.taskId}`);
+                    }
+                  }}>
                   <td>{task.taskId}</td>
                   <td>{task.taskName}</td>
                   <td>{task.taskStudyLength}</td>
