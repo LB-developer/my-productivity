@@ -1,4 +1,4 @@
-import { Course } from "./models"
+import { Course } from "../models/courses.type"
 
 // Gets a max 3 courses of a user
 export async function fetchCoursesPreview(userId: number): Promise<Course[]> {
