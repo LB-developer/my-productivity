@@ -1,5 +1,4 @@
-import { ThirtyHistoryLineGraph } from "./models"
-import { TodaysTasksData, TaskData } from "./models"
+import { ThirtyHistoryLineGraph, TodaysTasksData, TaskData } from "../models/tasks.type"
 
 export async function fetchLastThirtyMinutes(
   userId: string
