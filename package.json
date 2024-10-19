@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.20.0",
+    "firebase": "^10.14.1"
+  },
+  "scripts": {
+    "client:dev": "dotenvx run -- npm --prefix client run dev"
+  }
+}
