@@ -26,6 +26,7 @@ func SetupRoutes() *chi.Mux {
 	router.Get("/api/v1/tasks", handlers.GetAllTasksHandler)
 	router.Get("/api/v1/tasks/last-30", handlers.GetLastMonthHoursHandler)
 	router.Get("/api/v1/tasks/preview", handlers.GetTodaysTasksHandler)
+	router.Put("/api/v1/tasks/create-task", handlers.CreateNewTaskHandler)
 
 	// User routes
 	router.Get("/api/v1/users/info", handlers.UserWidgetInfoHandler)
