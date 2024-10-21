@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -105,4 +106,36 @@ func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
+}
+
+func CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
+	userIdStr := req.URL.Query().Get("userId")
+
+	userIdNum, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		fmt.Printf("Couldn't convert userId parameter to number when creating new task \n%v", err)
+		http.Error(w, "Couldn't convert userId parameter to number", http.StatusInternalServerError)
+		return
+	}
+
+	db, err := server.InitDB(w)
+	if err != nil {
+		fmt.Printf("Couldn't open database when creating new task \n%v", err)
+		http.Error(w, "Couldn't open database when creating new task", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	// pass off the creation to our db function
+	taskId, err := models.CreateNewTask(db, userIdNum)
+	if err != nil {
+		fmt.Printf("Couldn't insert new task into db \n%v", err)
+		http.Error(w, "Couldn't insert new task into db \n%v", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("taskId after conversion: %v", taskId)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(taskId)
 }
