@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -12,6 +13,21 @@ type TaskPreview struct {
 	CourseID        int    `json:"courseId"`
 	CourseName      string `json:"courseName"`
 	CourseAuthor    string `json:"courseAuthor"`
+}
+
+type CreateTaskResponse struct {
+	TaskId int64 `json:"taskId"`
+}
+
+type CreateTask struct {
+	TaskStudyLength string
+	TaskStudyDate   string
+	TaskName        string
+	UserId          int
+	Course          int
+	CourseName      string
+	CourseAuthor    string
+	CourseLink      string
 }
 
 type Task struct {
@@ -189,4 +205,29 @@ func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	allTasks = append(allTasks, completedTasks, incompleteTasks)
 
 	return allTasks, nil
+}
+
+func CreateNewTask(db *sql.DB, userId int) (CreateTaskResponse, error) {
+	query := `
+	INSERT INTO tasks (schedule_id, user_id, task_name, study_length, study_date, course_id, is_completed)
+	VALUES
+	(?, ?, 'Untitled', '00:45:00', datetime('now','+1 day','localtime'), 1, 0)
+	RETURNING id AS taskId
+	`
+
+	taskCreated, err := db.Exec(query, userId, userId)
+	if err != nil {
+		return CreateTaskResponse{}, err
+	}
+	fmt.Println(taskCreated.LastInsertId())
+
+	taskId, err := taskCreated.LastInsertId()
+	if err != nil {
+		log.Printf("Failed to retrieve last insert id when creating task \n%v", err)
+		return CreateTaskResponse{}, err
+	}
+	createdTaskId := CreateTaskResponse{
+		TaskId: taskId,
+	}
+	return createdTaskId, nil
 }
