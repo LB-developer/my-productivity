@@ -1,15 +1,19 @@
 import { Button } from "react-bootstrap"
 import { useCreateNewTask } from "../hooks/Tasks/Tasks"
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../src/store/ContextProvider";
 
 export default function AddTask() {
-  const mutate = useCreateNewTask("1");
+  const auth = useAuth();
+  if (!auth.user) return <p>Please log in.</p>
+  const mutate = useCreateNewTask(auth.user.publicId);
   const navigate = useNavigate();
 
   const handleCreateTask = async () => {
-    // TODO: change "1" to dynamic value based on the user
-    const { taskId } = await mutate.mutateAsync("1")
-    navigate(`/tasks/${taskId}`)
+    if (auth.user) {
+      const { taskId } = await mutate.mutateAsync(auth.user.publicId)
+      navigate(`/tasks/${taskId}`)
+    }
   }
 
   return (
