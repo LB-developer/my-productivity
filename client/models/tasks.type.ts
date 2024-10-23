@@ -34,3 +34,7 @@ export interface TaskData {
   courseAuthor: string
   courseLink: string
 }
+
+export interface CreatedTask {
+  taskId: number
+}
