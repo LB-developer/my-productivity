@@ -12,7 +12,7 @@ export default function CoursesPreview({ userId }: Props) {
     isLoading,
     isError,
     error,
-  } = useGetCoursesPreview(+userId)
+  } = useGetCoursesPreview(userId)
 
   if (isError) {
     console.error(error)

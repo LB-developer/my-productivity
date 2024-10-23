@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 
 	server "productivity/server/db"
 	"productivity/server/models"
@@ -52,14 +51,7 @@ func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
-	userIdStr := req.URL.Query().Get("userId")
-
-	userIdNum, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		log.Printf("Couldn't convert userId to num \n%v", err)
-		http.Error(w, "Couldn't convert userId to num", http.StatusInternalServerError)
-		return
-	}
+	publicUserID := req.URL.Query().Get("userId")
 
 	db, err := server.InitDB(w)
 	if err != nil {
@@ -69,7 +61,7 @@ func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	coursePreview, err := models.FetchCoursesPreview(db, userIdNum)
+	coursePreview, err := models.FetchCoursesPreview(db, publicUserID)
 	if err != nil {
 		log.Printf("Couldn't fetch courses preview: \n%v", err)
 		http.Error(w, "Couldn't fetch courses preview", http.StatusInternalServerError)

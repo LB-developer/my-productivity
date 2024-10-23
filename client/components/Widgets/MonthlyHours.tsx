@@ -6,7 +6,11 @@ interface Props {
 }
 
 export default function MonthlyHours({ userId }: Props) {
-  const { data: history } = useGetLastThirty(userId)
+  const { data: history, isLoading } = useGetLastThirty(userId)
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
 
   if (history) {
     return (
@@ -14,7 +18,8 @@ export default function MonthlyHours({ userId }: Props) {
         <span className="d-flex flex-column justify-content-center w-25 ms-3">
           <p className="small fw-light mb-0 mt-3">Hours this month</p>
           <p className="fs-2 fw-bold">
-            {history[0].data.reduce((acc, curr) => (acc += curr.y), 0)}
+            {history[0].data.reduce((acc, curr) => (acc += curr.y), 0)
+              ?? 0}
           </p>
         </span>
         <div

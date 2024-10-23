@@ -1,7 +1,7 @@
 import { useGetUserWidgetInfo } from '../../hooks/Users'
 
 interface Props {
-  userId: number
+  userId: string
 }
 
 export default function UserOverview({ userId }: Props) {
