@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	server "productivity/server/db"
 	"productivity/server/models"
@@ -20,19 +19,13 @@ func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	userIdStr := req.URL.Query().Get("userId")
-	if userIdStr == "" {
+	userPublicID := req.URL.Query().Get("userId")
+	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	userIdNum, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		http.Error(w, "Invalid userId query", http.StatusBadRequest)
-		return
-	}
-
-	lastThirtyGraph, err := models.GetLastMonthHours(db, userIdNum)
+	lastThirtyGraph, err := models.GetLastMonthHours(db, userPublicID)
 	if err != nil {
 		log.Printf("couldn't query last month hours of db_table: tasks %v", err)
 		http.Error(w, "Couldn't query last month hours of db_table: tasks", http.StatusInternalServerError)
@@ -44,15 +37,9 @@ func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
-	userIdStr := req.URL.Query().Get("userId")
-	if userIdStr == "" {
+	userPublicID := req.URL.Query().Get("userId")
+	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
-		return
-	}
-
-	userIdNum, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		http.Error(w, "Invalid userId query", http.StatusBadRequest)
 		return
 	}
 
@@ -64,7 +51,7 @@ func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	todaysTasks, err := models.GetSchedulePreview(db, userIdNum)
+	todaysTasks, err := models.GetSchedulePreview(db, userPublicID)
 	if err != nil {
 		log.Printf("Couldn't query db %v", err)
 		http.Error(w, "Couldn't query prod.db", http.StatusInternalServerError)
@@ -76,16 +63,9 @@ func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
-	userStr := req.URL.Query().Get("userId")
-	if userStr == "" {
+	userPublicID := req.URL.Query().Get("userId")
+	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
-		return
-	}
-
-	userIdNum, err := strconv.Atoi(userStr)
-	if err != nil {
-		log.Printf("Couldn't convert userId to num %v", err)
-		http.Error(w, "Couldn't convert userId to num", http.StatusInternalServerError)
 		return
 	}
 
@@ -97,7 +77,7 @@ func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	tasks, err := models.GetAllTasks(db, userIdNum)
+	tasks, err := models.GetAllTasks(db, userPublicID)
 	if err != nil {
 		log.Printf("Couldn't retrieve all tasks: \n%v", err)
 		http.Error(w, "Couldn't retrieve all tasks", http.StatusInternalServerError)
@@ -109,12 +89,9 @@ func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
-	userIdStr := req.URL.Query().Get("userId")
-
-	userIdNum, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		fmt.Printf("Couldn't convert userId parameter to number when creating new task \n%v", err)
-		http.Error(w, "Couldn't convert userId parameter to number", http.StatusInternalServerError)
+	userPublicID := req.URL.Query().Get("userId")
+	if userPublicID == "" {
+		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
@@ -127,14 +104,12 @@ func CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
 	defer db.Close()
 
 	// pass off the creation to our db function
-	taskId, err := models.CreateNewTask(db, userIdNum)
+	taskId, err := models.CreateNewTask(db, userPublicID)
 	if err != nil {
 		fmt.Printf("Couldn't insert new task into db \n%v", err)
 		http.Error(w, "Couldn't insert new task into db \n%v", http.StatusInternalServerError)
 		return
 	}
-
-	log.Printf("taskId after conversion: %v", taskId)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(taskId)

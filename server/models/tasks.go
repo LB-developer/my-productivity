@@ -23,7 +23,7 @@ type CreateTask struct {
 	TaskStudyLength string
 	TaskStudyDate   string
 	TaskName        string
-	UserId          int
+	UserId          string
 	Course          int
 	CourseName      string
 	CourseAuthor    string
@@ -52,7 +52,7 @@ type Coordinates struct {
 	Y float64 `json:"y"`
 }
 
-func GetLastMonthHours(db *sql.DB, userId int) ([]LastThirtyInGraph, error) {
+func GetLastMonthHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, error) {
 	// get sum of hours for completed tasks within in the last 30 days
 	// uncompleted tasks contribute 0 to total time
 	// returned format is: MM/DD | Hours
@@ -71,7 +71,7 @@ func GetLastMonthHours(db *sql.DB, userId int) ([]LastThirtyInGraph, error) {
 	GROUP BY
 	month;`
 
-	rows, err := db.Query(query, userId)
+	rows, err := db.Query(query, userPublicID)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func GetLastMonthHours(db *sql.DB, userId int) ([]LastThirtyInGraph, error) {
 	return lastThirtyGraph, nil
 }
 
-func GetSchedulePreview(db *sql.DB, userId int) ([]TaskPreview, error) {
+func GetSchedulePreview(db *sql.DB, userPublicID string) ([]TaskPreview, error) {
 	query := `
 	SELECT 
 	tasks.id AS "TaskID",
@@ -119,7 +119,7 @@ func GetSchedulePreview(db *sql.DB, userId int) ([]TaskPreview, error) {
 		3;
 	`
 
-	rows, err := db.Query(query, userId)
+	rows, err := db.Query(query, userPublicID)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func GetSchedulePreview(db *sql.DB, userId int) ([]TaskPreview, error) {
 	return todaysTasks, nil
 }
 
-func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
+func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	query := `
 	SELECT tasks.id, tasks.study_length, tasks.study_date, tasks.task_name, 
 	COALESCE(courses.id,0) AS course_id, COALESCE(courses.name, '') AS course_name, 
@@ -148,7 +148,7 @@ func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	AND tasks.is_completed = ?
 	`
 	// get completed tasks
-	rows, err := db.Query(query, userId, 1)
+	rows, err := db.Query(query, userPublicID, 1)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
@@ -175,7 +175,7 @@ func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	}
 
 	// get incomplete tasks
-	incompletedRows, err := db.Query(query, userId, 0)
+	incompletedRows, err := db.Query(query, userPublicID, 0)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
@@ -207,15 +207,15 @@ func GetAllTasks(db *sql.DB, userId int) ([][]Task, error) {
 	return allTasks, nil
 }
 
-func CreateNewTask(db *sql.DB, userId int) (CreateTaskResponse, error) {
+func CreateNewTask(db *sql.DB, userPublicID string) (CreateTaskResponse, error) {
 	query := `
-	INSERT INTO tasks (schedule_id, user_id, task_name, study_length, study_date, course_id, is_completed)
+	INSERT INTO tasks (user_id, task_name, study_length, study_date, course_id, is_completed)
 	VALUES
-	(?, ?, 'Untitled', '00:45:00', datetime('now','+1 day','localtime'), 1, 0)
+	(?, 'Untitled', '00:45:00', datetime('now','+1 day','localtime'), 1, 0)
 	RETURNING id AS taskId
 	`
 
-	taskCreated, err := db.Exec(query, userId, userId)
+	taskCreated, err := db.Exec(query, userPublicID)
 	if err != nil {
 		return CreateTaskResponse{}, err
 	}
