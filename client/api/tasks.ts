@@ -1,4 +1,4 @@
-import { ThirtyHistoryLineGraph, TodaysTasksData, TaskData } from "../models/tasks.type"
+import { ThirtyHistoryLineGraph, TodaysTasksData, TaskData, CreatedTask } from "../models/tasks.type"
 
 export async function fetchLastThirtyMinutes(
   userId: string
@@ -62,3 +62,23 @@ export async function fetchAllTasks(
 
   return res.json()
 }
+
+export async function createNewTask(
+  userId: string
+): Promise<CreatedTask> {
+  const res = await fetch(
+    `http://localhost:8080/api/v1/tasks/create-task?userId=${userId}`,
+    {
+      method: "PUT",
+    }
+  )
+  const contentType = res.headers.get("Content-Type")
+  if (!res.ok || !contentType?.includes("application/json")) {
+    const err = await res.text()
+    console.error("Error:", err)
+    throw new Error("Failed to create a new task")
+  }
+
+  return res.json()
+}
+
