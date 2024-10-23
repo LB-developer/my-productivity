@@ -9,9 +9,12 @@ import UserOverview from "../../components/Widgets/UserOverview"
 import SearchBar from "../../components/SearchBar"
 import { Container, Row, Col } from "react-bootstrap"
 import { Helmet } from "react-helmet"
+import { useAuth } from "../../src/store/ContextProvider"
 
 export default function Dashboard() {
-  const userId: number = 1
+  const auth = useAuth();
+  if (!auth || !auth.user?.publicId) return <p>Checking user data...</p>
+  const userId = auth.user?.publicId
 
   return (
     <div className="bg-secondary bg-opacity-25 ">
@@ -32,7 +35,7 @@ export default function Dashboard() {
           </Row>
           <Row className="gap-3 gy-2">
             <Col className="bg-light ms-3 rounded-4">
-              <MonthlyHours userId={String(userId)} />
+              <MonthlyHours userId={userId} />
             </Col>
 
             <Col className="bg-danger bg-opacity-50">
@@ -45,11 +48,11 @@ export default function Dashboard() {
           </Row>
           <Row className="gap-3 gy-2">
             <Col className="bg-light ms-3 rounded-4">
-              <TodaysTasks userId={String(userId)} />
+              <TodaysTasks userId={userId} />
             </Col>
 
             <Col className="bg-light rounded-4">
-              <CoursesPreview userId={String(userId)} />
+              <CoursesPreview userId={userId} />
             </Col>
 
             <Col className="bg-warning bg-opacity-50">

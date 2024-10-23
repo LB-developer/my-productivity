@@ -7,7 +7,7 @@ import (
 
 type Course struct {
 	ID              int    `json:"id"`
-	UserID          int    `json:"userId"`
+	UserID          string `json:"userId"`
 	Name            string `json:"name"`
 	Price           string `json:"price"`
 	Author          string `json:"author"`
@@ -16,47 +16,45 @@ type Course struct {
 	HoursCompleted  int    `json:"hoursCompleted"`
 }
 
-func GetCoursesById (db *sql.DB, userId UserIDReq) ([]Course, error) {
-	
+func GetCoursesById(db *sql.DB, userId UserIDReq) ([]Course, error) {
 	query := `
 	SELECT *
 	FROM courses
 	WHERE user_id = ?
 	`
-	
+
 	rows, err := db.Query(query, userId.UserID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	
+
 	var courses []Course
 	for rows.Next() {
 
 		var course Course
 		err := rows.Scan(
-			&course.ID, 
+			&course.ID,
 			&course.UserID,
-			&course.Name, 
+			&course.Name,
 			&course.Price,
 			&course.Author,
 			&course.Link,
 			&course.HoursToComplete,
 			&course.HoursCompleted,
-			) 
-			
+		)
 		if err != nil {
 			log.Printf("Couldn't scan courses %v", err)
 			return nil, err
 		}
-			
+
 		courses = append(courses, course)
 	}
 
 	return courses, nil
 }
 
-func FetchCoursesPreview(db *sql.DB, userId int) ([]Course, error) {
+func FetchCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
 	// TODO: add "pinned" column to db so user can choose which courses are displayed on their dashboard
 	query := `
 	SELECT *
@@ -73,15 +71,14 @@ func FetchCoursesPreview(db *sql.DB, userId int) ([]Course, error) {
 	}
 	defer rows.Close()
 
-
 	var threeCourses []Course
 	for rows.Next() {
 
 		var course Course
 		err := rows.Scan(
-			&course.ID, 
+			&course.ID,
 			&course.UserID,
-			&course.Name, 
+			&course.Name,
 			&course.Price,
 			&course.Author,
 			&course.Link,
@@ -93,8 +90,9 @@ func FetchCoursesPreview(db *sql.DB, userId int) ([]Course, error) {
 			return nil, err
 		}
 
-		threeCourses = append(threeCourses, course) 
+		threeCourses = append(threeCourses, course)
 	}
 
 	return threeCourses, nil
 }
+

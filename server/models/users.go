@@ -3,7 +3,7 @@ package models
 import "database/sql"
 
 type UserIDReq struct {
-	UserID int `json:"userId"`
+	UserID string `json:"userId"`
 }
 
 type UserStats struct {
@@ -12,7 +12,7 @@ type UserStats struct {
 	HoursCount    int `json:"totalHoursCompleted"`
 }
 
-func GetUserStats(userId int) (UserStats, error) {
+func GetUserStats(userId string) (UserStats, error) {
 	db, err := sql.Open("sqlite3", "../server/db/prod.db")
 	if err != nil {
 		return UserStats{}, err
