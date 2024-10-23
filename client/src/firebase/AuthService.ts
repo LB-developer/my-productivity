@@ -1,4 +1,5 @@
-import { auth } from "./firebaseConfig.ts";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, firestore } from "./firebaseConfig.ts";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,8 +10,38 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
+/*
+ Sign-up flow:
+  try {
+      1. Create the user with either (email and password) OR (google popup)
+      2. Generate a public ID for the user
+           (to be used for urls etc...)
+      3. Store user in Firestore (including publicId)
+      4. Return the user object
+    }
+ */
+
+const generatePublicId = () => `user_${Math.random().toString(36).substring(2, 10)}`;
+
 export const doCreateUserWithEmailAndPassword = async (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const publicId = generatePublicId();
+
+    await setDoc(doc(firestore, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email,
+      publicId,
+      createdAt: new Date(),
+    });
+
+    return { ...user, publicId };
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
 };
 
 export const doSignInWithEmailAndPassword = (email: string, password: string) => {
@@ -18,12 +49,26 @@ export const doSignInWithEmailAndPassword = (email: string, password: string) =>
 };
 
 export const doSignInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
-  // add user to firestore
-  return result
+    const publicId = generatePublicId();
+
+    await setDoc(doc(firestore, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email,
+      publicId,
+      createdAt: new Date(),
+    });
+
+
+    return { ...user, publicId };
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
 };
 
 export const doSignOut = () => {
