@@ -1,2 +1,3 @@
-INSERT INTO users (auth0_id, full_name, created_at, location)
-VALUES ('auth0|123456789', 'John Doe', '2024-09-25 10:00:00', 'New York');
+INSERT INTO users (public_id, uid, display_name, created_at)
+VALUES
+("test_public_id","test_uid","display name hi", "2024-10-10 09:00:00");

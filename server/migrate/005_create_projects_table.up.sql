@@ -3,5 +3,5 @@ CREATE TABLE projects (
     user_id INTEGER,
     name TEXT,
     github_link TEXT,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES user(public_id)
 );
