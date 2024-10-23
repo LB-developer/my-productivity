@@ -1,10 +1,15 @@
-import { GoogleAuthProvider, onAuthStateChanged, User } from 'firebase/auth';
+import { GoogleAuthProvider, onAuthStateChanged, User, } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../firebase/firebaseConfig';
+import { auth, firestore } from '../firebase/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+
+export interface UserWithPublicID extends User {
+  publicId?: string
+}
 
 // Interface for Auth Context
 export interface IAuth {
-  user: User | null
+  user: UserWithPublicID | null
   loading: boolean
   userLoggedIn: boolean
   isEmailUser: boolean
@@ -24,7 +29,7 @@ export function useAuth() {
 }
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserWithPublicID | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
@@ -38,12 +43,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isGoogleUser: isGoogleUser
   };
 
+  const fetchUserData = async (user: User): Promise<UserWithPublicID> => {
+    const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+    if (userDoc.exists()) {
+      return { ...user, ...userDoc.data() };  // Merge Firebase auth data with Firestore data
+    } else {
+      console.error('No user document found!');
+      return user;  // Fallback to just Firebase user if Firestore data is missing
+    }
+  };
+
   useEffect(() => {
     // Check if user is logged in
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setCurrentUser(user);
-
+        const fullUser = await fetchUserData(user)
+        setCurrentUser(fullUser);
         // is the user signing up with email
         const isEmail = user.providerData.some(
           (provider) => provider.providerId === "password"
@@ -64,7 +79,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUserLoggedIn(false);
       }
       // when the user has completed the sign in process
-      // after either outcome loading has stopped
+      // after either outcome, loading has stopped
       setIsLoading(false);
     });
 
