@@ -3,10 +3,11 @@ import { useGetUserTasks } from "../hooks/Tasks/Tasks"
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { TaskData } from "../api/models";
+import { TaskData } from "../models/tasks.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-
+import AddTask from "../components/AddTask"
+import { firebaseConfig } from "../../firebaseConfig"
 
 export default function Tasks() {
 
@@ -24,7 +25,7 @@ export default function Tasks() {
   // initialize incomplete task into state variable when data is fetched
   useEffect(() => {
     if (tasks)
-      setIncompleteTaskList(tasks[0])
+      setIncompleteTaskList(tasks[1])
   }, [tasks])
 
   // filter tasks by course name
@@ -60,25 +61,28 @@ export default function Tasks() {
         <Helmet>
           <title>Tasks</title>
         </Helmet>
-        <div className="d-flex flex-row">
+        <div>Above lmao</div>
+        <AddTask />
+        <div className="" style={{ overflow: "auto", height: "75vh", maxWidth: "75vw" }}>
           <Table striped bordered hover>
-            <thead>
+            <thead style={{ position: "sticky", top: "0", zIndex: "1" }}>
               <tr>
-                <th>#</th>
-                <th>Task Name</th>
-                <th>Task Length</th>
-                <th>Task Date</th>
-                <th>Course Name<Dropdown>
-                  <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    <FontAwesomeIcon icon={faFilter} />
-                  </Dropdown.Toggle>
+                <th className="">#</th>
+                <th className="">Task Name</th>
+                <th className="">Task Length</th>
+                <th className="">Task Date</th>
+                <th className="d-flex gap-3 align-items-center">Course Name
+                  <Dropdown>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                      <FontAwesomeIcon icon={faFilter} />
+                    </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    {courseNameList.map((courseName, index) =>
-                      <Dropdown.Item key={`${index}${courseName}`} onClick={() => setTaskFilter(courseName)}>{courseName}</Dropdown.Item>
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
+                    <Dropdown.Menu>
+                      {courseNameList.map((courseName, index) =>
+                        <Dropdown.Item key={`${index}${courseName}`} onClick={() => setTaskFilter(courseName)}>{courseName}</Dropdown.Item>
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </th>
               </tr>
             </thead>
