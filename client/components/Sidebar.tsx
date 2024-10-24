@@ -8,18 +8,15 @@ import {
   faTableColumns,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Nav, NavItem } from "react-bootstrap"
+import { Nav, NavItem } from "react-bootstrap"
 import { NavLink, } from "react-router-dom"
-import { doSignOut } from "../src/firebase/AuthService"
-
+import SignOutButton from "../components/Widgets/Buttons/SignOutButton"
 const navPosition = "nav-link d-flex flex-row gap-3 align-items-center"
 const activeLink = "nav-word text-primary"
 const inactiveLink = "nav-word text-dark text-opacity-25"
 
 export default function Sidebar() {
 
-  // className="nav-link d-flex flex-row gap-3 align-items-center"
-  // TODO: replace navlinks to dynamic routes based on the user
   return (
     <div className="d-flex flex-column bg-light bg-opacity-75 p-5 gap-5 vh-100 justify-content-between">
       <div className="d-flex flex-column gap-4">
@@ -30,7 +27,7 @@ export default function Sidebar() {
           <ul className="fw-bold d-flex flex-column gap-2 ps-0 align-items-start">
             <NavItem>
               <NavLink
-                to="/"
+                to="/dashboard"
                 className={({ isActive, isPending }) =>
                   isPending ? "pending" : isActive ? `${navPosition} ${activeLink}` : `${navPosition} ${inactiveLink}`
                 }
@@ -150,7 +147,7 @@ export default function Sidebar() {
           </ul>
         </Nav>
       </div>
-      <Button className="justify-self-end" onClick={doSignOut}>Sign Out</Button>
+      <SignOutButton />
     </div>
   )
 }
