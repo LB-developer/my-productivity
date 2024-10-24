@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { Navigate, Link, useNavigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../../src/store/ContextProvider.tsx'
 import { doCreateUserWithEmailAndPassword } from '../../src/firebase/AuthService.ts'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 
-const Register = () => {
-
-  const navigate = useNavigate()
+export default function Register() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -101,4 +99,3 @@ const Register = () => {
   );
 }
 
-export default Register
