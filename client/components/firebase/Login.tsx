@@ -4,7 +4,7 @@ import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../src/fire
 import { useAuth } from '../../src/store/ContextProvider.tsx'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 
-const Login = () => {
+export default function Login() {
   const { userLoggedIn } = useAuth()
 
   const [email, setEmail] = useState('')
@@ -34,7 +34,7 @@ const Login = () => {
   }
   return (
     <div className="bg-light d-flex align-items-center justify-content-center vh-100">
-      {userLoggedIn && <Navigate to="/" replace />}
+      {userLoggedIn && <Navigate to="/dashboard" replace />}
 
       <Container style={{ maxWidth: '432px' }}>
         <Row className="justify-content-center">
@@ -110,4 +110,3 @@ const Login = () => {
 
 }
 
-export default Login
