@@ -7,12 +7,26 @@ import { TaskData } from "../models/tasks.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import AddTask from "../components/AddTask"
-import { firebaseConfig } from "../../firebaseConfig"
+import { useAuth } from "../src/store/ContextProvider";
+
+const handleDueDate = (endDate: string) => {
+  const secondsSince = Date.parse(endDate)
+
+  const currDay = new Date().valueOf()
+  let equation = currDay - secondsSince
+  return <td> {Math.floor(equation / (1000 * 60 * 60))} | {endDate} </td>
+}
 
 export default function Tasks() {
+  const { loading, user } = useAuth();
+  const navigate = useNavigate();
 
-  // TODO: replace "1" with dynamically attained userId
-  const { data: tasks, isLoading, isError, error } = useGetUserTasks("1");
+  if (loading || !user || !user.publicId) {
+    return <p>Checking user info...</p>
+  }
+
+  const { data: tasks, isLoading, isError, error } = useGetUserTasks(user.publicId);
+
 
   // TODO: get data for names of unique courses for list
   const courseNameList = ["Go Programming", "React Fundamentals", "View All"];
@@ -20,7 +34,6 @@ export default function Tasks() {
   const [incompleteTaskList, setIncompleteTaskList] = useState<TaskData[]>();
   const [taskFilter, setTaskFilter] = useState<string>("View All");
 
-  const navigate = useNavigate();
 
   // initialize incomplete task into state variable when data is fetched
   useEffect(() => {
@@ -61,7 +74,6 @@ export default function Tasks() {
         <Helmet>
           <title>Tasks</title>
         </Helmet>
-        <div>Above lmao</div>
         <AddTask />
         <div className="" style={{ overflow: "auto", height: "75vh", maxWidth: "75vw" }}>
           <Table striped bordered hover>
@@ -98,7 +110,7 @@ export default function Tasks() {
                   <td>{task.taskId}</td>
                   <td>{task.taskName}</td>
                   <td>{task.taskStudyLength}</td>
-                  <td>{task.taskStudyDate}</td>
+                  {handleDueDate(task.taskStudyDate)}
                   <td>{task.courseName}</td>
                 </tr>
               )
