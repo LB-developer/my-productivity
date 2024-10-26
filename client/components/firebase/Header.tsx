@@ -5,7 +5,7 @@ import { doSignOut } from '../../src/firebase/AuthService.ts'
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 
 
-const Header = () => {
+export default function Header() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -55,6 +55,4 @@ const Header = () => {
     </Navbar>
   );
 };
-
-export default Header;
 
