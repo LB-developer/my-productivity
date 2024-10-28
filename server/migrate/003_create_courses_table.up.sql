@@ -5,7 +5,9 @@ CREATE TABLE courses (
   price TEXT,
   author TEXT,
   link TEXT,
-  hours_to_complete INTEGER,
-  hours_completed INTEGER,
-  FOREIGN KEY (user_id) REFERENCES user(id)
+  est_hours_to_complete INTEGER,
+  hours_completed INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
