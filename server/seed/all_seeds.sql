@@ -5,5 +5,9 @@
 .read ../seed/004_seed_tasks_data.sql
 .read ../seed/005_seed_projects_data.sql
 .read ../seed/006_seed_technologies_data.sql
-.read ../seed/007_seed_todos_data.sql
 .read ../seed/008_seed_notes_data.sql
+.read ../seed/009_seed_roadmaps_data.sql
+.read ../seed/010_seed_milestones_data.sql
+.read ../seed/011_seed_sessions_data.sql
+.read ../seed/012_seed_tags_data.sql
+.read ../seed/013_seed_tag_assignments_data.sql
