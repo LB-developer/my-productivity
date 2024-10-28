@@ -1,3 +1,4 @@
-INSERT INTO users (public_id, uid, display_name, created_at)
+INSERT INTO users (public_id, display_name, email, first_name, last_name, profile_image, location) 
 VALUES
-("test_public_id","test_uid","display name hi", "2024-10-10 09:00:00");
+('user_wd0kglpl', 'JohnDoe', 'john@example.com', 'John', 'Doe', 'https://example.com/avatar1.png', 'New York'),
+('user-124', 'JaneDoe', 'jane@example.com', 'Jane', 'Doe', 'https://example.com/avatar2.png', 'San Francisco');
