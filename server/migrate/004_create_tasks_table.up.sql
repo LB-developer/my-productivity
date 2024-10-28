@@ -2,6 +2,7 @@
 CREATE TABLE tasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL, -- Linked to users.id
+  name TEXT NOT NULL,
   deadline DATE NOT NULL, -- Task deadline
   context_type TEXT NOT NULL, -- E.g., 'course', 'project'
   context_id INTEGER, -- ID of the associated entity or null when ad hoc
