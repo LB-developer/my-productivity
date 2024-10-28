@@ -5,7 +5,10 @@ CREATE TABLE courses (
   price TEXT,
   author TEXT,
   link TEXT,
-  hours_to_complete INTEGER,
-  hours_completed INTEGER,
-  FOREIGN KEY (user_id) REFERENCES user(id)
+  est_hours_to_complete INTEGER,
+  is_completed BOOLEAN DEFAULT FALSE,
+  in_progress BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

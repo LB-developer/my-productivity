@@ -1,13 +1,11 @@
-CREATE TABLE projects (
+CREATE TABLE milestones (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  name TEXT NOT NULL,
-  description TEXT,
-  github_link TEXT,
+  deadline DATE NOT NULL,
   is_completed BOOLEAN DEFAULT FALSE,
   in_progress BOOLEAN DEFAULT FALSE,
+  parent_roadmap INTEGER NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  FOREIGN KEY (parent_roadmap) REFERENCES roadmaps(id) ON DELETE CASCADE
 );
 
