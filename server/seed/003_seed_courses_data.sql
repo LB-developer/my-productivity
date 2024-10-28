@@ -1,6 +1,6 @@
-INSERT INTO courses (user_id, name, price, author, link, hours_to_complete, hours_completed)
-VALUES 
-('user_wd0kglpl', 'React Fundamentals', 'Free', 'John Smith', 'https://react-course.com', 20, 5),
-('user_wd0kglpl', 'Go Programming', '50', 'Jane Doe', 'https://go-course.com', 30, 10),
-('user_wd0kglpl', 'C# For Orcs', '90', 'Galadriel', 'https://javaisbad.com', 3000, 10),
-('user_wd0kglpl', 'Neetcode150', 'Free', 'Neetcode', 'https://neetcode.io', 300, 10);
+-- courses_seed.sql
+INSERT INTO courses (user_id, name, price, author, link, created_at, updated_at) VALUES
+(1, 'Introduction to Python', 'Free', 'John Doe', 'https://example.com/python', '2024-10-12 09:00:00', '2024-10-12 09:00:00'),
+(2, 'React for Beginners', '29.99', 'Jane Doe', 'https://example.com/react', '2024-10-13 10:00:00', '2024-10-13 10:00:00'),
+(1, 'Data Science 101', '49.99', 'John Doe', 'https://example.com/data-science', '2024-10-14 11:00:00', '2024-10-14 11:00:00');
+
