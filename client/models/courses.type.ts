@@ -5,6 +5,7 @@ export interface Course {
   price: string
   author: string
   link: string
-  hoursToComplete: string
-  hoursCompleted: string
+  estHoursCompleted: string
+  isCompleted: boolean
+  inProgress: boolean
 }
