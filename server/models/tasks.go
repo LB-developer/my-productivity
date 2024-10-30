@@ -76,6 +76,7 @@ type Task struct {
 	IsCompleted        bool          `json:"isCompleted"`
 	InProgress         bool          `json:"inProgress"`
 	CreateAt           string        `json:"createdAt"`
+	CreatedAt          string        `json:"createdAt"`
 	UpdatedAt          string        `json:"updatedAt"`
 }
 
