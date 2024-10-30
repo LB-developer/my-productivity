@@ -2,44 +2,9 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"reflect"
 )
-
-type TaskPreview struct {
-	TaskID          int    `json:"taskId"`
-	TaskStudyLength string `json:"taskStudyLength"`
-	TaskName        string `json:"taskName"`
-	CourseID        int    `json:"courseId"`
-	CourseName      string `json:"courseName"`
-	CourseAuthor    string `json:"courseAuthor"`
-}
-
-type CreateTaskResponse struct {
-	TaskId int64 `json:"taskId"`
-}
-
-type CreateTask struct {
-	TaskStudyLength string
-	TaskStudyDate   string
-	TaskName        string
-	UserId          string
-	Course          int
-	CourseName      string
-	CourseAuthor    string
-	CourseLink      string
-}
-
-type Task struct {
-	TaskID          int    `json:"taskId"`
-	TaskStudyLength string `json:"taskStudyLength"`
-	TaskStudyDate   string `json:"taskStudyDate"`
-	TaskName        string `json:"taskName"`
-	CourseID        int    `json:"courseId"`
-	CourseName      string `json:"courseName"`
-	CourseAuthor    string `json:"courseAuthor"`
-	CourseLink      string `json:"courseLink"`
-}
 
 type LastThirtyInGraph struct {
 	Id    string        `json:"id"`
@@ -98,25 +63,46 @@ func GetLastMonthHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, er
 	return lastThirtyGraph, nil
 }
 
-func GetSchedulePreview(db *sql.DB, userPublicID string) ([]TaskPreview, error) {
+type Task struct {
+	TaskID             int           `json:"taskId"`
+	Deadline           string        `json:"deadline"`
+	TaskName           string        `json:"taskName"`
+	ContextType        string        `json:"contextType"`
+	ContextID          int           `json:"contextId"`
+	Priority           int           `json:"priority"`
+	ParentTaskID       sql.NullInt64 `json:"parentTaskid"`
+	MilestoneID        sql.NullInt64 `json:"milestoneId"`
+	EstHoursToComplete sql.NullInt64 `json:"estHoursToComplete"`
+	IsCompleted        bool          `json:"isCompleted"`
+	InProgress         bool          `json:"inProgress"`
+	CreateAt           string        `json:"createdAt"`
+	UpdatedAt          string        `json:"updatedAt"`
+}
+
+func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
 	query := `
 	SELECT 
-	tasks.id AS "TaskID",
-	tasks.study_length AS "StudyLength",
-	tasks.task_name AS "TaskName",
-	courses.id AS "CourseID", 
-	courses.name AS "CourseName", 
-	courses.author AS "CourseAuthor"  
+		tasks.id AS "TaskID",
+		tasks.name AS "TaskName",
+		tasks.deadline AS "Deadline",
+		tasks.context_type AS "ContextType",
+		tasks.context_id AS "ContextID",
+		tasks.priority AS "Priority",
+		tasks.parent_task_id AS "ParentTaskID",
+		tasks.milestone_id AS "MileStoneID",
+		tasks.est_hours_to_complete AS "EstHoursToComplete",
+		tasks.is_completed AS "IsCompleted",
+		tasks.in_progress AS "InProgress",
+		tasks.created_at AS "CreatedAt",
+		tasks.updated_at AS "UpdatedAt"
 	FROM 
 		tasks 
-		CROSS JOIN courses ON tasks.course_id = courses.id 
 	WHERE 
 		tasks.user_id = ? 
-		AND 
-    -- -1 AND 0 because of US time conversion i.e. US is one day ahead (I think?)
-		julianday('now') - julianday(tasks.study_date) BETWEEN -1 AND 0
+	ORDER BY 
+		Priority
 	LIMIT 
-		3;
+		3
 	`
 
 	rows, err := db.Query(query, userPublicID)
@@ -125,10 +111,21 @@ func GetSchedulePreview(db *sql.DB, userPublicID string) ([]TaskPreview, error) 
 	}
 	defer rows.Close()
 
-	var todaysTasks []TaskPreview
+	var todaysTasks []Task
 	for rows.Next() {
-		var task TaskPreview
-		if err := rows.Scan(&task.TaskID, &task.TaskStudyLength, &task.TaskName, &task.CourseID, &task.CourseName, &task.CourseAuthor); err != nil {
+		var task Task
+		if err := rows.Scan(
+			&task.TaskID,
+			&task.TaskName,
+			&task.ContextType,
+			&task.ContextID,
+			&task.Priority,
+			&task.ParentTaskID,
+			&task.MilestoneID,
+			&task.EstHoursToComplete,
+			&task.IsCompleted,
+			&task.InProgress,
+		); err != nil {
 			return nil, err
 		}
 		todaysTasks = append(todaysTasks, task)
@@ -137,15 +134,33 @@ func GetSchedulePreview(db *sql.DB, userPublicID string) ([]TaskPreview, error) 
 	return todaysTasks, nil
 }
 
+type ParentTask struct {
+	Parent   Task
+	SubTasks []Task
+}
+
 func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	query := `
-	SELECT tasks.id, tasks.study_length, tasks.study_date, tasks.task_name, 
-	COALESCE(courses.id,0) AS course_id, COALESCE(courses.name, '') AS course_name, 
-	COALESCE(courses.author, '') AS course_author, COALESCE(courses.link, '') AS course_link
-	FROM tasks
-	LEFT JOIN courses ON tasks.course_id = courses.id
-	WHERE tasks.user_id = ?
-	AND tasks.is_completed = ?
+	SELECT 
+		tasks.id AS "TaskID",
+		tasks.name AS "TaskName",
+		tasks.deadline AS "Deadline",
+		tasks.context_type AS "ContextType",
+		tasks.context_id AS "ContextID",
+		tasks.priority AS "Priority",
+		tasks.parent_task_id AS "ParentTaskID",
+		tasks.milestone_id AS "MileStoneID",
+		tasks.est_hours_to_complete AS "EstHoursToComplete",
+		tasks.is_completed AS "IsCompleted",
+		tasks.in_progress AS "InProgress",
+		tasks.created_at AS "CreatedAt",
+		tasks.updated_at AS "UpdatedAt"
+	FROM 
+		tasks 
+	WHERE 
+		tasks.user_id = ? 
+	AND 
+		IsCompleted = ?
 	`
 	// get completed tasks
 	rows, err := db.Query(query, userPublicID, 1)
@@ -160,13 +175,15 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 		var completedTask Task
 		if err := rows.Scan(
 			&completedTask.TaskID,
-			&completedTask.TaskStudyLength,
-			&completedTask.TaskStudyDate,
 			&completedTask.TaskName,
-			&completedTask.CourseID,
-			&completedTask.CourseName,
-			&completedTask.CourseAuthor,
-			&completedTask.CourseLink,
+			&completedTask.ContextType,
+			&completedTask.ContextID,
+			&completedTask.Priority,
+			&completedTask.ParentTaskID,
+			&completedTask.MilestoneID,
+			&completedTask.EstHoursToComplete,
+			&completedTask.IsCompleted,
+			&completedTask.InProgress,
 		); err != nil {
 			return nil, err
 		}
@@ -185,15 +202,16 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	var incompleteTasks []Task
 	for incompletedRows.Next() {
 		var incompleteTask Task
-		if err := incompletedRows.Scan(
+		if err := rows.Scan(
 			&incompleteTask.TaskID,
-			&incompleteTask.TaskStudyLength,
-			&incompleteTask.TaskStudyDate,
 			&incompleteTask.TaskName,
-			&incompleteTask.CourseID,
-			&incompleteTask.CourseName,
-			&incompleteTask.CourseAuthor,
-			&incompleteTask.CourseLink,
+			&incompleteTask.ContextType,
+			&incompleteTask.ContextID,
+			&incompleteTask.Priority,
+			&incompleteTask.ParentTaskID,
+			&incompleteTask.MilestoneID,
+			&incompleteTask.EstHoursToComplete,
+			&incompleteTask.IsCompleted,
 		); err != nil {
 			return nil, err
 		}
@@ -207,19 +225,90 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	return allTasks, nil
 }
 
-func CreateNewTask(db *sql.DB, userPublicID string) (CreateTaskResponse, error) {
-	query := `
-	INSERT INTO tasks (user_id, task_name, study_length, study_date, course_id, is_completed)
-	VALUES
-	(?, 'Untitled', '00:45:00', datetime('now','+1 day','localtime'), 1, 0)
-	RETURNING id AS taskId
-	`
+type CreateTask struct {
+	UserId       string
+	Deadline     string
+	TaskName     string
+	ContextType  string
+	ContextID    int
+	Priority     int
+	ParentTaskID sql.NullInt64
+	MilestoneID  sql.NullInt64
+	IsCompleted  bool
+	InProgress   bool
+}
 
-	taskCreated, err := db.Exec(query, userPublicID)
+type CreateTaskResponse struct {
+	TaskId int64 `json:"taskId"`
+}
+
+// values are pointers to make them nullable
+type DefaultTask struct {
+	ContextID    *int
+	ContextType  *string
+	ParentTaskID *int
+}
+
+// Helper function to safely get the value or nil from a pointer field
+func getFieldValue(field reflect.Value) interface{} {
+	if field.Kind() == reflect.Ptr && !field.IsNil() {
+		// Dereference the pointer and return the value
+		return field.Elem().Interface()
+	}
+	// Return nil if the field is nil or not a pointer
+	return nil
+}
+
+// Function to extract all field values from DefaultTask for database insertion
+func prepareDBValues(task DefaultTask) []interface{} {
+	v := reflect.ValueOf(task)
+
+	values := make([]interface{}, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		values[i] = getFieldValue(v.Field(i)) // Safely get the value or nil
+	}
+	return values
+}
+
+func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
+	// get user id from the public id
+	userIDQuery := `
+	SELECT id
+	FROM users
+	WHERE public_id = ?
+	`
+	var userId int
+	userIdRow := db.QueryRow(userIDQuery, userPublicID)
+	err := userIdRow.Scan(&userId)
 	if err != nil {
 		return CreateTaskResponse{}, err
 	}
-	fmt.Println(taskCreated.LastInsertId())
+
+	/*
+	  defaultTask values are all pointers to allow nullability.
+	  We cannot just dereference each value because dereferencing nil is not possible,
+	  so we pass the struct to prepareDBValues which will return an interface of values either
+	  -- The dereferenced value
+	  -- nil
+
+	  Values are returned in the following order:
+	  0: ContextType
+	  1: ContextID
+	  2: ParentTaskID
+	*/
+	values := prepareDBValues(defaultTask)
+
+	query := `
+	INSERT INTO tasks (user_id, name, deadline, context_type, context_id, priority, parent_task_id) 
+	VALUES
+	(?, 'Untitled', datetime('now','+7 day','localtime'), ?, ?, 3, ?)
+	RETURNING id AS taskId
+	`
+
+	taskCreated, err := db.Exec(query, userId, values[0], values[1], values[2])
+	if err != nil {
+		return CreateTaskResponse{}, err
+	}
 
 	taskId, err := taskCreated.LastInsertId()
 	if err != nil {
