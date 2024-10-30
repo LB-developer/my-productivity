@@ -74,24 +74,26 @@ export default function Tasks() {
     return <p>Something went wrong...</p>
   }
 
-  if (taskList) {
-    return (
-      <section className="m-4">
-        <HelmetProvider>
-          <Helmet>
-            <title>Tasks</title>
-          </Helmet>
-          <section className="d-flex justify-content-between">
-            <section className="">
-              <p className="mb-0 ">Welcome to your,</p>
-              <h2 className="fw-bold display-6 mt-0">Tasks</h2>
-            </section>
-            <AddTask contextType={null} contextId={null} parentTaskId={null} />
+
+  return (
+    <section className="m-4">
+      <HelmetProvider>
+        <Helmet>
+          <title>Tasks</title>
+        </Helmet>
+        <section className="d-flex justify-content-between">
+          <section className="">
+            <p className="mb-0 ">Welcome to your,</p>
+            <h2 className="fw-bold display-6 mt-0">Tasks</h2>
           </section>
-          <Tabs onSelect={(k) => setTaskSelector(+k)} id="completion-tab-selector" defaultActiveKey={"incomplete"}>
-            <Tab eventKey={1} title={"Incomplete"}></Tab>
-            <Tab eventKey={0} title={"Complete"} ></Tab>
-          </Tabs>
+          <AddTask contextType={null} contextId={null} parentTaskId={null} />
+        </section>
+        <Tabs onSelect={(k) => setTaskSelector(k ? +k : 1)} id="completion-tab-selector" defaultActiveKey={"incomplete"}>
+          <Tab eventKey={1} title={"Incomplete"}></Tab>
+          <Tab eventKey={0} title={"Complete"} ></Tab>
+        </Tabs>
+        {taskList
+          ?
           <div className="" style={{ overflow: "auto", maxHeight: "75vh" }}>
             <Table className="mt-4" variant="dark" striped bordered hover>
               <thead style={{ position: "sticky", top: "0", zIndex: "1" }}>
@@ -127,13 +129,33 @@ export default function Tasks() {
               </tbody>
             </Table>
           </div>
-        </HelmetProvider>
-      </section >
-    )
-  } else {
-    return <p>Bruh</p>
-  }
+          : <Table className="mt-4" variant="dark" striped bordered hover>
+            { /* User has no data to display so show an empty table */}
+            <thead style={{ position: "sticky", top: "0", zIndex: "1" }}>
+              <tr>
+                <th className="">#</th>
+                <th className="">Task Name</th>
+                <th className="">Deadline</th>
+                <th className="">Category</th>
+                <th className="">Milestone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr >
+                <td>1</td>
+                <td >Add a task to get started!</td>
+                <td>{}</td>
+                <td>{}</td>
+                <td>{}</td>
+              </tr>
+            </tbody>
+          </Table>
+        }
+      </HelmetProvider>
+    </section >
+  )
 }
+
 
 //                  <Dropdown>
 //                    <Dropdown.Toggle variant="success" id="dropdown-basic">
