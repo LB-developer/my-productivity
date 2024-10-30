@@ -64,20 +64,19 @@ func GetLastMonthHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, er
 }
 
 type Task struct {
-	TaskID             int           `json:"taskId"`
-	Deadline           string        `json:"deadline"`
-	TaskName           string        `json:"taskName"`
-	ContextType        string        `json:"contextType"`
-	ContextID          int           `json:"contextId"`
-	Priority           int           `json:"priority"`
-	ParentTaskID       sql.NullInt64 `json:"parentTaskid"`
-	MilestoneID        sql.NullInt64 `json:"milestoneId"`
-	EstHoursToComplete sql.NullInt64 `json:"estHoursToComplete"`
-	IsCompleted        bool          `json:"isCompleted"`
-	InProgress         bool          `json:"inProgress"`
-	CreateAt           string        `json:"createdAt"`
-	CreatedAt          string        `json:"createdAt"`
-	UpdatedAt          string        `json:"updatedAt"`
+	TaskID             int            `json:"taskId"`
+	Deadline           string         `json:"deadline"`
+	TaskName           string         `json:"taskName"`
+	ContextType        sql.NullString `json:"contextType"`
+	ContextID          sql.NullInt64  `json:"contextId"`
+	Priority           int            `json:"priority"`
+	ParentTaskID       sql.NullInt64  `json:"parentTaskid"`
+	MilestoneID        sql.NullInt64  `json:"milestoneId"`
+	EstHoursToComplete sql.NullInt64  `json:"estHoursToComplete"`
+	IsCompleted        bool           `json:"isCompleted"`
+	InProgress         bool           `json:"inProgress"`
+	CreatedAt          string         `json:"createdAt"`
+	UpdatedAt          string         `json:"updatedAt"`
 }
 
 func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
@@ -126,6 +125,8 @@ func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
 			&task.EstHoursToComplete,
 			&task.IsCompleted,
 			&task.InProgress,
+			&task.CreatedAt,
+			&task.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -141,6 +142,12 @@ type ParentTask struct {
 }
 
 func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
+	userId, err := getUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
+		return nil, err
+	}
+
 	query := `
 	SELECT 
 		tasks.id AS "TaskID",
@@ -163,8 +170,9 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	AND 
 		IsCompleted = ?
 	`
+
 	// get completed tasks
-	rows, err := db.Query(query, userPublicID, 1)
+	rows, err := db.Query(query, userId, 1)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
@@ -177,6 +185,7 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 		if err := rows.Scan(
 			&completedTask.TaskID,
 			&completedTask.TaskName,
+			&completedTask.Deadline,
 			&completedTask.ContextType,
 			&completedTask.ContextID,
 			&completedTask.Priority,
@@ -185,6 +194,8 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 			&completedTask.EstHoursToComplete,
 			&completedTask.IsCompleted,
 			&completedTask.InProgress,
+			&completedTask.CreatedAt,
+			&completedTask.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -193,7 +204,7 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	}
 
 	// get incomplete tasks
-	incompletedRows, err := db.Query(query, userPublicID, 0)
+	incompletedRows, err := db.Query(query, userId, 0)
 	if err != nil {
 		log.Printf("Couldn't query db_table tasks courses %v", err)
 		return nil, err
@@ -203,9 +214,10 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	var incompleteTasks []Task
 	for incompletedRows.Next() {
 		var incompleteTask Task
-		if err := rows.Scan(
+		if err := incompletedRows.Scan(
 			&incompleteTask.TaskID,
 			&incompleteTask.TaskName,
+			&incompleteTask.Deadline,
 			&incompleteTask.ContextType,
 			&incompleteTask.ContextID,
 			&incompleteTask.Priority,
@@ -213,6 +225,9 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 			&incompleteTask.MilestoneID,
 			&incompleteTask.EstHoursToComplete,
 			&incompleteTask.IsCompleted,
+			&incompleteTask.InProgress,
+			&incompleteTask.CreatedAt,
+			&incompleteTask.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -271,7 +286,7 @@ func prepareDBValues(task DefaultTask) []interface{} {
 	return values
 }
 
-func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
+func getUserIdFromPublicId(db *sql.DB, userPublicID string) (int, error) {
 	// get user id from the public id
 	userIDQuery := `
 	SELECT id
@@ -282,6 +297,16 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	userIdRow := db.QueryRow(userIDQuery, userPublicID)
 	err := userIdRow.Scan(&userId)
 	if err != nil {
+		return -1, err
+	}
+
+	return userId, nil
+}
+
+func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
+	userId, err := getUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
 		return CreateTaskResponse{}, err
 	}
 
@@ -293,8 +318,8 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	  -- nil
 
 	  Values are returned in the following order:
-	  0: ContextType
-	  1: ContextID
+	  0: ContextID
+	  1: ContextType
 	  2: ParentTaskID
 	*/
 	values := prepareDBValues(defaultTask)
@@ -306,7 +331,7 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	RETURNING id AS taskId
 	`
 
-	taskCreated, err := db.Exec(query, userId, values[0], values[1], values[2])
+	taskCreated, err := db.Exec(query, userId, values[1], values[0], values[2])
 	if err != nil {
 		return CreateTaskResponse{}, err
 	}
