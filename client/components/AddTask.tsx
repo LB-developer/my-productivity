@@ -17,12 +17,13 @@ export default function AddTask({ contextType, contextId, parentTaskId }: Props)
     if (auth.user && auth.user.publicId) {
       try {
         const publicUserId = auth.user.publicId
-        const { taskId } = await mutate.mutateAsync({
+        await mutate.mutateAsync({
           publicUserId,
           contextType,
           contextId,
           parentTaskId
         })
+
       } catch (error) {
         console.error("Failed to create task");
       }
