@@ -34,7 +34,7 @@ func GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	courses, err := models.GetCoursesById(db, userId)
+	courses, err := models.GetCoursesByUserId(db, userId)
 	if err != nil {
 		log.Printf("Could not fetch courses: %s\n %v", "courses", err)
 		http.Error(w, "Could not fetch courses", http.StatusInternalServerError)
@@ -61,7 +61,7 @@ func GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	coursePreview, err := models.FetchCoursesPreview(db, publicUserID)
+	coursePreview, err := models.GetCoursesPreview(db, publicUserID)
 	if err != nil {
 		log.Printf("Couldn't fetch courses preview: \n%v", err)
 		http.Error(w, "Couldn't fetch courses preview", http.StatusInternalServerError)

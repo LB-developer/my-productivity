@@ -1,10 +1,11 @@
+import { DefaultTaskParameters } from "../hooks/Tasks/Tasks"
 import { ThirtyHistoryLineGraph, TodaysTasksData, TaskData, CreatedTask } from "../models/tasks.type"
 
 export async function fetchLastThirtyMinutes(
-  userId: string
+  publicUserId: string
 ): Promise<ThirtyHistoryLineGraph[]> {
   const res = await fetch(
-    `http://localhost:8080/api/v1/tasks/last-30?userId=${userId}`,
+    `http://localhost:8080/api/v1/tasks/last-30?publicUserId=${publicUserId}`,
     {
       method: "GET",
       headers: {
@@ -23,10 +24,10 @@ export async function fetchLastThirtyMinutes(
 }
 
 export async function fetchTodaysTasks(
-  userId: string
+  publicUserId: string
 ): Promise<TodaysTasksData[]> {
   const res = await fetch(
-    `http://localhost:8080/api/v1/tasks/preview?userId=${userId}`,
+    `http://localhost:8080/api/v1/tasks/preview?publicUserId=${publicUserId}`,
     {
       method: "GET",
       headers: { "Content-type": "application/json" },
@@ -44,10 +45,10 @@ export async function fetchTodaysTasks(
 
 
 export async function fetchAllTasks(
-  userId: string
+  publicUserId: string
 ): Promise<TaskData[][]> {
   const res = await fetch(
-    `http://localhost:8080/api/v1/tasks?userId=${userId}`,
+    `http://localhost:8080/api/v1/tasks?publicUserId=${publicUserId}`,
     {
       method: "GET",
       headers: { "Content-type": "application/json" },
@@ -63,13 +64,18 @@ export async function fetchAllTasks(
   return res.json()
 }
 
-export async function createNewTask(
-  userId: string
+export async function createNewTask({
+  publicUserId,
+  contextType,
+  contextId,
+  parentTaskId }: DefaultTaskParameters
 ): Promise<CreatedTask> {
   const res = await fetch(
-    `http://localhost:8080/api/v1/tasks/create-task?userId=${userId}`,
+    `http://localhost:8080/api/v1/tasks/create-task?publicUserId=${publicUserId}`,
     {
       method: "PUT",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contextType, contextId, parentTaskId })
     }
   )
   const contentType = res.headers.get("Content-Type")

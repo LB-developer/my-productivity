@@ -26,13 +26,33 @@ export interface TodaysTasksData {
 
 export interface TaskData {
   taskId: number
-  taskStudyLength: string
-  taskStudyDate: string
+  deadline: string
   taskName: string
-  courseId: number
-  courseName: string
-  courseAuthor: string
-  courseLink: string
+  contextType: {
+    String: number
+    Valid: boolean
+  }
+  contextId: {
+    Int64: number
+    Valid: boolean
+  }
+  priority: number
+  parentTaskId: {
+    Int64: number
+    Valid: boolean
+  }
+  milestoneId: {
+    Int64: number
+    Valid: boolean
+  }
+  estHoursToComplete: {
+    Int64: number
+    Valid: boolean
+  }
+  isCompleted: boolean
+  inProgress: boolean
+  createAt: string
+  updatedAt: string
 }
 
 export interface CreatedTask {

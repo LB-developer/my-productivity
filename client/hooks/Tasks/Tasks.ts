@@ -1,27 +1,34 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { fetchLastThirtyMinutes, fetchAllTasks, createNewTask } from "../../api/tasks"
+import { CreatedTask } from "../../models/tasks.type"
 
 
-export function useGetUserTasks(userId: string) {
+export function useGetUserTasks(publicUserId: string) {
   return useQuery({
-    queryKey: [`tasks ${userId}`],
-    queryFn: () => fetchAllTasks(userId),
+    queryKey: [`tasks ${publicUserId}`],
+    queryFn: () => fetchAllTasks(publicUserId),
   })
 }
 
-export function useGetLastThirty(userId: string) {
+export function useGetLastThirty(publicUserId: string) {
   return useQuery({
     queryKey: ["thirtyDayTaskHours"],
-    queryFn: () => fetchLastThirtyMinutes(userId),
+    queryFn: () => fetchLastThirtyMinutes(publicUserId),
   })
 }
 
-export function useCreateNewTask(userId: string) {
+export interface DefaultTaskParameters {
+  publicUserId: string
+  contextType: string | null
+  contextId: number | null
+  parentTaskId: number | null
+}
+export function useCreateNewTask() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (userId: string) => createNewTask(userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`tasks ${userId}`] })
+  return useMutation<CreatedTask, Error, DefaultTaskParameters>({
+    mutationFn: (taskInput) => createNewTask(taskInput),
+    onSuccess: (_, { publicUserId }) => {
+      queryClient.invalidateQueries({ queryKey: [`tasks ${publicUserId}`] })
     }
   })
 }

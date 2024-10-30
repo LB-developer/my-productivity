@@ -6,17 +6,18 @@ import (
 )
 
 type Course struct {
-	ID              int    `json:"id"`
-	UserID          string `json:"userId"`
-	Name            string `json:"name"`
-	Price           string `json:"price"`
-	Author          string `json:"author"`
-	Link            string `json:"link"`
-	HoursToComplete int    `json:"hoursToComplete"`
-	HoursCompleted  int    `json:"hoursCompleted"`
+	ID                 int    `json:"id"`
+	UserID             string `json:"userId"`
+	Name               string `json:"name"`
+	Price              string `json:"price"`
+	Author             string `json:"author"`
+	Link               string `json:"link"`
+	EstHoursToComplete int    `json:"estHoursToComplete"`
+	IsCompleted        bool   `json:"isCompleted"`
+	InProgress         bool   `json:"inProgress"`
 }
 
-func GetCoursesById(db *sql.DB, userId UserIDReq) ([]Course, error) {
+func GetCoursesByUserId(db *sql.DB, userId UserIDReq) ([]Course, error) {
 	query := `
 	SELECT *
 	FROM courses
@@ -40,8 +41,9 @@ func GetCoursesById(db *sql.DB, userId UserIDReq) ([]Course, error) {
 			&course.Price,
 			&course.Author,
 			&course.Link,
-			&course.HoursToComplete,
-			&course.HoursCompleted,
+			&course.EstHoursToComplete,
+			&course.IsCompleted,
+			&course.InProgress,
 		)
 		if err != nil {
 			log.Printf("Couldn't scan courses %v", err)
@@ -54,7 +56,7 @@ func GetCoursesById(db *sql.DB, userId UserIDReq) ([]Course, error) {
 	return courses, nil
 }
 
-func FetchCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
+func GetCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
 	// TODO: add "pinned" column to db so user can choose which courses are displayed on their dashboard
 	query := `
 	SELECT *
@@ -82,8 +84,9 @@ func FetchCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
 			&course.Price,
 			&course.Author,
 			&course.Link,
-			&course.HoursToComplete,
-			&course.HoursCompleted,
+			&course.EstHoursToComplete,
+			&course.IsCompleted,
+			&course.InProgress,
 		)
 		if err != nil {
 			log.Printf("Couldn't scan courses %v", err)
@@ -95,4 +98,3 @@ func FetchCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
 
 	return threeCourses, nil
 }
-
