@@ -17,14 +17,19 @@ type Course struct {
 	InProgress         bool   `json:"inProgress"`
 }
 
-func GetCoursesByUserId(db *sql.DB, userId UserIDReq) ([]Course, error) {
+func GetCoursesByUserId(db *sql.DB, userPublicID string) ([]Course, error) {
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
+		return nil, err
+	}
 	query := `
 	SELECT *
 	FROM courses
 	WHERE user_id = ?
 	`
 
-	rows, err := db.Query(query, userId.UserID)
+	rows, err := db.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +61,12 @@ func GetCoursesByUserId(db *sql.DB, userId UserIDReq) ([]Course, error) {
 	return courses, nil
 }
 
-func GetCoursesPreview(db *sql.DB, userId string) ([]Course, error) {
+func GetCoursesPreview(db *sql.DB, userPublicID string) ([]Course, error) {
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
+		return nil, err
+	}
 	// TODO: add "pinned" column to db so user can choose which courses are displayed on their dashboard
 	query := `
 	SELECT *
