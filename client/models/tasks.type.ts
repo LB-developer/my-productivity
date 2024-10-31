@@ -29,7 +29,7 @@ export interface TaskData {
   deadline: string
   taskName: string
   contextType: {
-    String: number
+    String: string
     Valid: boolean
   }
   contextId: {
