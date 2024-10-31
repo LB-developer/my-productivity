@@ -2,7 +2,7 @@ import { Button, Tab, Table, Tabs } from "react-bootstrap";
 import { useGetUserTasks } from "../hooks/Tasks/Tasks"
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { TaskData } from "../models/tasks.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
@@ -34,35 +34,19 @@ export default function Tasks() {
 
   const { data: tasks, isLoading, isError, error } = useGetUserTasks(user.publicId);
 
+  const [taskSelector, setTaskSelector] = useState<number>(1);
+  const [filter, setFilter] = useState<string>('none')
+
+  const filteredTasks = useMemo(() => {
+    if (tasks)
+      return filter === 'none'
+        ? tasks[taskSelector]
+        : tasks[taskSelector]?.filter((task) => task.contextType.String === filter)
+  }, [tasks, filter, taskSelector])
+
   // TODO: get data for names of unique courses for list
   // const courseNameList = ["Go Programming", "React Fundamentals", "View All"];
 
-  const [taskList, setTaskList] = useState<TaskData[]>();
-  // const [taskFilter, setTaskFilter] = useState<string>("View All");
-  const [taskSelector, setTaskSelector] = useState<number>(0);
-
-  // initialize incomplete task into state variable when data is fetched
-  useEffect(() => {
-    if (tasks)
-      setTaskList(tasks[taskSelector])
-  }, [tasks, taskSelector])
-
-  // filter tasks by course name
-  // useEffect(() => {
-  //   if (tasks && tasks && taskFilter !== "View All") {
-  //     let currentOrder = [...tasks[1]].filter(task => task.contextType === taskFilter)
-  //     setIncompleteTaskList(currentOrder);
-
-  //   } else {
-  //     if (tasks) {
-  //       // options to filter are a list of course names or "View all"
-  //       // -- this is the view all path
-  //       setIncompleteTaskList(tasks[1])
-  //     }
-  //   }
-
-
-  // }, [taskFilter])
 
   if (isLoading) {
     // TODO: replace with loading page, spinner, something
@@ -88,11 +72,11 @@ export default function Tasks() {
           </section>
           <AddTask contextType={null} contextId={null} parentTaskId={null} />
         </section>
-        <Tabs onSelect={(k) => setTaskSelector(k ? +k : 1)} id="completion-tab-selector" defaultActiveKey={"incomplete"}>
+        <Tabs onSelect={(k) => setTaskSelector(k ? +k : 1)} id="completion-tab-selector" defaultActiveKey={"incomplete"} >
           <Tab eventKey={1} title={"Incomplete"}></Tab>
           <Tab eventKey={0} title={"Complete"} ></Tab>
         </Tabs>
-        {taskList
+        {tasks
           ?
           <div className="" style={{ overflow: "auto", maxHeight: "75vh" }}>
             <Table className="mt-4" variant="dark" striped bordered hover>
@@ -107,21 +91,23 @@ export default function Tasks() {
                 </tr>
               </thead>
               <tbody>
-                {taskList.map(task =>
+                {filteredTasks?.map((task: TaskData) =>
                 (
                   <tr key={task.taskId} >
                     <td>{task.taskId}</td>
                     <td >{task.taskName}</td>
-                    <td>{handleDueDate(task.deadline)}</td>
+                    {handleDueDate(task.deadline)}
                     <td>{task.contextType.Valid && task.contextType.String}</td>
                     <td>{task.milestoneId.Valid && task.milestoneId.Int64}</td>
 
-                    <td className="" role="button" tabIndex={0} onClick={() => navigate(`/tasks/${task.taskId}`)}
+                    <td
+                      className="" role="button" tabIndex={0} onClick={() => navigate(`/tasks/${task.taskId}`)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           navigate(`/tasks/${task.taskId}`);
                         }
-                      }}><FontAwesomeIcon icon={faArrowUpRightFromSquare} /></td>
+                      }}><FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                    </td>
 
                   </tr>
                 )
