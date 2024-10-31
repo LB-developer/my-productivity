@@ -142,7 +142,7 @@ type ParentTask struct {
 }
 
 func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
-	userId, err := getUserIdFromPublicId(db, userPublicID)
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -286,7 +286,7 @@ func prepareDBValues(task DefaultTask) []interface{} {
 	return values
 }
 
-func getUserIdFromPublicId(db *sql.DB, userPublicID string) (int, error) {
+func GetUserIdFromPublicId(db *sql.DB, userPublicID string) (int, error) {
 	// get user id from the public id
 	userIDQuery := `
 	SELECT id
@@ -304,7 +304,7 @@ func getUserIdFromPublicId(db *sql.DB, userPublicID string) (int, error) {
 }
 
 func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
-	userId, err := getUserIdFromPublicId(db, userPublicID)
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return CreateTaskResponse{}, err
