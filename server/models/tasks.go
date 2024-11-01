@@ -17,26 +17,30 @@ type Coordinates struct {
 	Y float64 `json:"y"`
 }
 
-func GetLastMonthHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, error) {
-	// get sum of hours for completed tasks within in the last 30 days
-	// uncompleted tasks contribute 0 to total time
+func GetLastSevenHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, error) {
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
+		return nil, err
+	}
+
+	// get sum of hours for sessions within in the last 30 days
 	// returned format is: MM/DD | Hours
 	query := `
 	SELECT 
-	strftime('%m/%d', study_date) AS month,
-	SUM(
-		CASE 
-			WHEN is_completed = 1 THEN (strftime('%s', study_length) - strftime('%s', '00:00:00')) / 3600
-			ELSE 0
-		END
-		) AS total_time
-	FROM tasks 
-	WHERE user_id = ? 
-	AND julianday('now') - julianday(study_date) BETWEEN -1 AND 29 -- -1 to account for handling US based date
-	GROUP BY
-	month;`
+		strftime('%m/%d', started_at) AS month,
+		SUM(CAST(strftime('%s', ended_at) - strftime('%s', started_at) AS FLOAT)) / 3600 AS total_time
+        FROM 
+		sessions 
+        WHERE 
+		user_id = 1  
+        AND 
+		julianday('now') - julianday(ended_at) BETWEEN -1 AND 7
+        GROUP BY
+		month
+	`
 
-	rows, err := db.Query(query, userPublicID)
+	rows, err := db.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +84,12 @@ type Task struct {
 }
 
 func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
+	userId, err := GetUserIdFromPublicId(db, userPublicID)
+	if err != nil {
+		log.Printf("Users public id is not in the database")
+		return nil, err
+	}
+
 	query := `
 	SELECT 
 		tasks.id AS "TaskID",
@@ -105,7 +115,7 @@ func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
 		3
 	`
 
-	rows, err := db.Query(query, userPublicID)
+	rows, err := db.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -117,6 +127,7 @@ func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
 		if err := rows.Scan(
 			&task.TaskID,
 			&task.TaskName,
+			&task.Deadline,
 			&task.ContextType,
 			&task.ContextID,
 			&task.Priority,
