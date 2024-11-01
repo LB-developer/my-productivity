@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchTodaysTasks } from "../../api/tasks"
 
-export function useGetTodaysTasks(userId: string) {
+export function useGetTodaysTasks(publicUserId: string) {
   return useQuery({
-    queryKey: ["schedule-preview"],
-    queryFn: () => fetchTodaysTasks(userId),
+    queryKey: [`todays-tasks ${publicUserId}`],
+    queryFn: () => fetchTodaysTasks(publicUserId),
   })
 }
