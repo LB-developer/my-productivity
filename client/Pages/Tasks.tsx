@@ -80,7 +80,7 @@ export default function Tasks() {
           ?
           <div className="" style={{ overflow: "auto", maxHeight: "75vh" }}>
             <Table className="mt-4" variant="dark" striped bordered hover>
-              <thead style={{ position: "sticky", top: "0", zIndex: "1" }}>
+              <thead className="sticky-top" >
                 <tr>
                   <th className="">#</th>
                   <th className="">Task Name</th>
