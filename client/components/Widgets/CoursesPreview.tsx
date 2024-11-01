@@ -4,16 +4,16 @@ import { coursePreviewSkeleton } from './Skeletons'
 import ViewAllButton from './Buttons/ViewAllButton'
 
 interface Props {
-  userId: string
+  publicUserId: string
 }
 
-export default function CoursesPreview({ userId }: Props) {
+export default function CoursesPreview({ publicUserId }: Props) {
   const {
     data: threeCourses,
     isLoading,
     isError,
     error,
-  } = useGetCoursesPreview(userId)
+  } = useGetCoursesPreview(publicUserId)
 
   if (isError) {
     console.error(error)

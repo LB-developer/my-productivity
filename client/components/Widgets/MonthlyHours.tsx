@@ -2,11 +2,11 @@ import { ResponsiveLine } from '@nivo/line'
 import { useGetLastThirty } from '../../hooks/Tasks/Tasks'
 
 interface Props {
-  userId: string
+  publicUserId: string
 }
 
-export default function MonthlyHours({ userId }: Props) {
-  const { data: history, isLoading } = useGetLastThirty(userId)
+export default function MonthlyHours({ publicUserId }: Props) {
+  const { data: history, isLoading } = useGetLastThirty(publicUserId)
 
   if (isLoading) {
     return <p>Loading...</p>
@@ -16,7 +16,7 @@ export default function MonthlyHours({ userId }: Props) {
     return (
       <div className="d-flex flex-row h-100 w-100">
         <span className="d-flex flex-column justify-content-center w-25 ms-3">
-          <p className="small fw-light mb-0 mt-3">Hours this month</p>
+          <p className="small fw-light mb-0 mt-3">Hours: Last 7 Days</p>
           <p className="fs-2 fw-bold">
             {history[0].data.reduce((acc, curr) => (acc += curr.y), 0)
               ?? 0}

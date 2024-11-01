@@ -1,11 +1,11 @@
 import { useGetUserWidgetInfo } from '../../hooks/Users'
 
 interface Props {
-  userId: string
+  publicUserId: string
 }
 
-export default function UserOverview({ userId }: Props) {
-  const { data: info } = useGetUserWidgetInfo(userId)
+export default function UserOverview({ publicUserId }: Props) {
+  const { data: info } = useGetUserWidgetInfo(publicUserId)
 
   if (info)
     return (

@@ -3,11 +3,11 @@ import { useGetTodaysTasks } from "../../hooks/Schedule/Schedule"
 import ViewAllButton from "../../components/Widgets/Buttons/ViewAllButton"
 
 interface Props {
-  userId: string
+  publicUserId: string
 }
 
-export default function TodaysTasks({ userId }: Props) {
-  const { data: todaysTasks } = useGetTodaysTasks(userId)
+export default function TodaysTasks({ publicUserId }: Props) {
+  const { data: todaysTasks } = useGetTodaysTasks(publicUserId)
 
   if (todaysTasks)
     return (
@@ -16,12 +16,12 @@ export default function TodaysTasks({ userId }: Props) {
         {/* add seed data, add gap, return proper data */}
         <ul className="pt-0">
           {todaysTasks.map((task) => (
-            <section key={task.taskId} className="d-flex flex-row">
+            <section key={task.taskId} className="d-flex flex-row gap-2">
               <div
-                className="bg-primary border-0 mt-2 ms-1"
+                className="bg-primary border-0 mt-2 gap-2"
                 style={{ width: "0.3em", height: "2.5em" }}
               ></div>
-              <Card border="light" bg={"light"} text={"dark"} className="">
+              <Card className="mt-2">
                 <Card.Body className="d-flex flex-column mb-0 pb-1 pt-1">
                   <Card.Title className="mb-0 fs-6 fw-bold mt-1">
                     {task.taskName}
