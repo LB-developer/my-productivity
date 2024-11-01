@@ -20,13 +20,13 @@ func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	userPublicID := req.URL.Query().Get("userId")
+	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	lastThirtyGraph, err := models.GetLastMonthHours(db, userPublicID)
+	lastThirtyGraph, err := models.GetLastSevenHours(db, userPublicID)
 	if err != nil {
 		log.Printf("couldn't query last month hours of db_table: tasks %v", err)
 		http.Error(w, "Couldn't query last month hours of db_table: tasks", http.StatusInternalServerError)
@@ -38,7 +38,7 @@ func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
-	userPublicID := req.URL.Query().Get("userId")
+	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
