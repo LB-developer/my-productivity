@@ -8,7 +8,7 @@ import (
 	"productivity/server/models"
 )
 
-func UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("userId")
 	if userPublicID == "" {
 		log.Printf("Missing user Id query")
@@ -16,7 +16,7 @@ func UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userStats, err := models.GetUserStats(userPublicID)
+	userStats, err := models.GetUserStats(h.DB, userPublicID)
 	if err != nil {
 		log.Printf("Couldn't get user stats %v", err)
 		http.Error(w, "Couldn't get user stats", http.StatusInternalServerError)

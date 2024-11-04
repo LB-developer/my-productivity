@@ -7,26 +7,17 @@ import (
 	"net/http"
 	"strings"
 
-	server "productivity/server/db"
 	"productivity/server/models"
 )
 
-func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
-	db, err := server.InitDB(w)
-	if err != nil {
-		log.Printf("Couldn't open prod.db %v", err)
-		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
+func (h *Handler) GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
-		http.Error(w, "Missing userId query", http.StatusBadRequest)
+		http.Error(w, "Missing publicUserId query", http.StatusBadRequest)
 		return
 	}
 
-	lastThirtyGraph, err := models.GetLastSevenHours(db, userPublicID)
+	lastThirtyGraph, err := models.GetLastSevenHours(h.DB, userPublicID)
 	if err != nil {
 		log.Printf("couldn't query last month hours of db_table: tasks %v", err)
 		http.Error(w, "Couldn't query last month hours of db_table: tasks", http.StatusInternalServerError)
@@ -37,22 +28,14 @@ func GetLastMonthHoursHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(lastThirtyGraph)
 }
 
-func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	db, err := server.InitDB(w)
-	if err != nil {
-		log.Printf("Couldn't open prod.db %v", err)
-		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	todaysTasks, err := models.GetPriorityTasks(db, userPublicID)
+	todaysTasks, err := models.GetPriorityTasks(h.DB, userPublicID)
 	if err != nil {
 		log.Printf("Couldn't query db %v", err)
 		http.Error(w, "Couldn't query prod.db", http.StatusInternalServerError)
@@ -63,22 +46,14 @@ func GetTodaysTasksHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(todaysTasks)
 }
 
-func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	db, err := server.InitDB(w)
-	if err != nil {
-		log.Printf("Couldn't open prod.db %v", err)
-		http.Error(w, "Couldn't connect to prod.db", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	tasks, err := models.GetAllTasks(db, userPublicID)
+	tasks, err := models.GetAllTasks(h.DB, userPublicID)
 	if err != nil {
 		log.Printf("Couldn't retrieve all tasks: \n%v", err)
 		http.Error(w, "Couldn't retrieve all tasks", http.StatusInternalServerError)
@@ -89,7 +64,7 @@ func GetAllTasksHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(tasks)
 }
 
-func CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userPublicId query", http.StatusBadRequest)
@@ -121,16 +96,8 @@ func CreateNewTaskHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	db, err := server.InitDB(w)
-	if err != nil {
-		fmt.Printf("Couldn't open database when creating new task \n%v", err)
-		http.Error(w, "Couldn't open database when creating new task", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
 	// pass off the creation to our db function
-	taskId, err := models.CreateNewTask(db, userPublicID, defaultTask)
+	taskId, err := models.CreateNewTask(h.DB, userPublicID, defaultTask)
 	if err != nil {
 		fmt.Printf("Couldn't insert new task into db \n%v", err)
 		http.Error(w, "Couldn't insert new task into db \n%v", http.StatusInternalServerError)
