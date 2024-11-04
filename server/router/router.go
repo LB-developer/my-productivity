@@ -1,13 +1,15 @@
 package router
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
+	"database/sql"
 
 	"productivity/server/handlers"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
-func SetupRoutes() *chi.Mux {
+func SetupRoutes(db *sql.DB) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"},
@@ -17,6 +19,8 @@ func SetupRoutes() *chi.Mux {
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
+
+	handlers := handlers.NewHandler(db)
 
 	// Course routes
 	router.Get("/api/v1/courses", handlers.GetCoursesByIdHandler)
