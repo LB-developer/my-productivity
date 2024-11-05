@@ -7,6 +7,7 @@ import { TaskData } from "../models/tasks.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import AddTask from "../components/AddTask"
+import Loading from "../components/Loading"
 import { useAuth } from "../src/store/ContextProvider";
 
 const handleDueDate = (endDate: string) => {
@@ -50,7 +51,7 @@ export default function Tasks() {
 
   if (isLoading) {
     // TODO: replace with loading page, spinner, something
-    return <p>Loading Tasks...</p>
+    return <Loading />
   }
 
   if (isError) {
