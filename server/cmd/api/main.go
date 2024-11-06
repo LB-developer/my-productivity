@@ -90,10 +90,3 @@ func (app *application) serve(cfg config.Config) error {
 
 	return srv.ListenAndServe()
 }
-
-func (app *application) logError(r *http.Request, err error) {
-	app.logger.PrintError(err, map[string]string{
-		"request_method": r.Method,
-		"request_url":    r.URL.String(),
-	})
-}
