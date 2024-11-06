@@ -5,6 +5,10 @@ import (
 	"log"
 )
 
+type CourseModel struct {
+	DB *sql.DB
+}
+
 type Course struct {
 	ID                 int    `json:"id"`
 	UserID             string `json:"userId"`
@@ -17,8 +21,8 @@ type Course struct {
 	InProgress         bool   `json:"inProgress"`
 }
 
-func GetCoursesByUserId(db *sql.DB, userPublicID string) ([]Course, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (c CourseModel) GetCoursesByUserId(userPublicID string) ([]Course, error) {
+	userId, err := GetUserIdFromPublicId(c.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -29,7 +33,7 @@ func GetCoursesByUserId(db *sql.DB, userPublicID string) ([]Course, error) {
 	WHERE user_id = ?
 	`
 
-	rows, err := db.Query(query, userId)
+	rows, err := c.DB.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +65,8 @@ func GetCoursesByUserId(db *sql.DB, userPublicID string) ([]Course, error) {
 	return courses, nil
 }
 
-func GetCoursesPreview(db *sql.DB, userPublicID string) ([]Course, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (c CourseModel) GetCoursesPreview(userPublicID string) ([]Course, error) {
+	userId, err := GetUserIdFromPublicId(c.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -77,7 +81,7 @@ func GetCoursesPreview(db *sql.DB, userPublicID string) ([]Course, error) {
 		3
 	`
 
-	rows, err := db.Query(query, userId)
+	rows, err := c.DB.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}

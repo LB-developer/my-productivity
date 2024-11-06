@@ -6,6 +6,10 @@ import (
 	"reflect"
 )
 
+type TaskModel struct {
+	DB *sql.DB
+}
+
 type LastThirtyInGraph struct {
 	Id    string        `json:"id"`
 	Color string        `json:"color"`
@@ -17,8 +21,8 @@ type Coordinates struct {
 	Y float64 `json:"y"`
 }
 
-func GetLastSevenHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (t TaskModel) GetLastSevenHours(userPublicID string) ([]LastThirtyInGraph, error) {
+	userId, err := GetUserIdFromPublicId(t.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -40,7 +44,7 @@ func GetLastSevenHours(db *sql.DB, userPublicID string) ([]LastThirtyInGraph, er
 		month
 	`
 
-	rows, err := db.Query(query, userId)
+	rows, err := t.DB.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +87,8 @@ type Task struct {
 	UpdatedAt          string         `json:"updatedAt"`
 }
 
-func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (t TaskModel) GetPriorityTasks(userPublicID string) ([]Task, error) {
+	userId, err := GetUserIdFromPublicId(t.t.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -115,7 +119,7 @@ func GetPriorityTasks(db *sql.DB, userPublicID string) ([]Task, error) {
 		3
 	`
 
-	rows, err := db.Query(query, userId)
+	rows, err := t.DB.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -152,8 +156,8 @@ type ParentTask struct {
 	SubTasks []Task
 }
 
-func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (t TaskModel) GetAllTasks(userPublicID string) ([][]Task, error) {
+	userId, err := GetUserIdFromPublicId(t.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -183,9 +187,9 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	`
 
 	// get completed tasks
-	rows, err := db.Query(query, userId, 1)
+	rows, err := t.DB.Query(query, userId, 1)
 	if err != nil {
-		log.Printf("Couldn't query db_table tasks courses %v", err)
+		log.Printf("Couldn't query t.DB_table tasks courses %v", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -215,9 +219,9 @@ func GetAllTasks(db *sql.DB, userPublicID string) ([][]Task, error) {
 	}
 
 	// get incomplete tasks
-	incompletedRows, err := db.Query(query, userId, 0)
+	incompletedRows, err := t.DB.Query(query, userId, 0)
 	if err != nil {
-		log.Printf("Couldn't query db_table tasks courses %v", err)
+		log.Printf("Couldn't query t.DB_table tasks courses %v", err)
 		return nil, err
 	}
 	defer incompletedRows.Close()
@@ -276,8 +280,8 @@ type DefaultTask struct {
 	ParentTaskID *int
 }
 
-// Helper function to safely get the value or nil from a pointer field
-func getFieldValue(field reflect.Value) interface{} {
+// Helper func (t TaskModel)tion to safely get the value or nil from a pointer field
+func (t TaskModel) getFieldValue(field reflect.Value) interface{} {
 	if field.Kind() == reflect.Ptr && !field.IsNil() {
 		// Dereference the pointer and return the value
 		return field.Elem().Interface()
@@ -286,8 +290,8 @@ func getFieldValue(field reflect.Value) interface{} {
 	return nil
 }
 
-// Function to extract all field values from DefaultTask for database insertion
-func prepareDBValues(task DefaultTask) []interface{} {
+// func (t TaskModel)tion to extract all field values from DefaultTask for database insertion
+func (t TaskModel) preparet.DBValues(task DefaultTask) []interface{} {
 	v := reflect.ValueOf(task)
 
 	values := make([]interface{}, v.NumField())
@@ -297,25 +301,9 @@ func prepareDBValues(task DefaultTask) []interface{} {
 	return values
 }
 
-func GetUserIdFromPublicId(db *sql.DB, userPublicID string) (int, error) {
-	// get user id from the public id
-	userIDQuery := `
-	SELECT id
-	FROM users
-	WHERE public_id = ?
-	`
-	var userId int
-	userIdRow := db.QueryRow(userIDQuery, userPublicID)
-	err := userIdRow.Scan(&userId)
-	if err != nil {
-		return -1, err
-	}
 
-	return userId, nil
-}
-
-func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
-	userId, err := GetUserIdFromPublicId(db, userPublicID)
+func (t TaskModel) CreateNewTask(userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
+	userId, err := GetUserIdFromPublicId(t.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return CreateTaskResponse{}, err
@@ -324,7 +312,7 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	/*
 	  defaultTask values are all pointers to allow nullability.
 	  We cannot just dereference each value because dereferencing nil is not possible,
-	  so we pass the struct to prepareDBValues which will return an interface of values either
+	  so we pass the struct to preparet.DBValues which will return an interface of values either
 	  -- The dereferenced value
 	  -- nil
 
@@ -333,7 +321,7 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	  1: ContextType
 	  2: ParentTaskID
 	*/
-	values := prepareDBValues(defaultTask)
+	values := preparet.DBValues(defaultTask)
 
 	query := `
 	INSERT INTO tasks (user_id, name, deadline, context_type, context_id, priority, parent_task_id) 
@@ -342,7 +330,7 @@ func CreateNewTask(db *sql.DB, userPublicID string, defaultTask DefaultTask) (Cr
 	RETURNING id AS taskId
 	`
 
-	taskCreated, err := db.Exec(query, userId, values[1], values[0], values[2])
+	taskCreated, err := t.DB.Exec(query, userId, values[1], values[0], values[2])
 	if err != nil {
 		return CreateTaskResponse{}, err
 	}

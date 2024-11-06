@@ -5,6 +5,10 @@ import (
 	"fmt"
 )
 
+type ProjectModel struct {
+	DB *sql.DB
+}
+
 type Project struct {
 	ID           int    `json:"id"`
 	Name         string `json:"name"`
@@ -16,14 +20,13 @@ type Project struct {
 	Status       string `json:"status"`
 }
 
-func GetProjects(db *sql.DB) ([]Project, error) {
-
+func (p ProjectModel) GetProjects(userPublicId string) ([]Project, error) {
 	query := `
 	SELECT *
 	FROM projects
 	`
 
-	rows, err := db.Query(query)
+	rows, err := p.DB.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -49,3 +52,4 @@ func GetProjects(db *sql.DB) ([]Project, error) {
 
 	return projects, nil
 }
+

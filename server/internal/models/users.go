@@ -1,6 +1,13 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+	"log"
+)
+
+type UserModel struct {
+	DB *sql.DB
+}
 
 type UserIDReq struct {
 	UserID string `json:"userId"`
@@ -12,12 +19,12 @@ type UserStats struct {
 	HoursCount    int `json:"totalHoursCompleted"`
 }
 
-func GetUserStats(userId string) (UserStats, error) {
-	db, err := sql.Open("sqlite3", "../server/db/prod.db")
+func (u UserModel) GetUserStats(userPublicID string) (UserStats, error) {
+	userId, err := GetUserIdFromPublicId(u.DB, userPublicID)
 	if err != nil {
+		log.Printf("Users public id is not in the database")
 		return UserStats{}, err
 	}
-	defer db.Close()
 
 	query := `
 	SELECT
@@ -29,7 +36,7 @@ func GetUserStats(userId string) (UserStats, error) {
    	AND is_completed = 1;
 	`
 
-	rows, err := db.Query(query, userId, userId, userId) // TODO: de-duplicate
+	rows, err := u.DB.Query(query, userId, userId, userId) // TODO: de-duplicate
 	if err != nil {
 		return UserStats{}, err
 	}
