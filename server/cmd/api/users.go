@@ -1,14 +1,12 @@
-package handlers
+package main
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"productivity/server/models"
 )
 
-func (h *Handler) UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request) {
+func (app *application) UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("userId")
 	if userPublicID == "" {
 		log.Printf("Missing user Id query")
@@ -16,7 +14,7 @@ func (h *Handler) UserWidgetInfoHandler(w http.ResponseWriter, req *http.Request
 		return
 	}
 
-	userStats, err := models.GetUserStats(h.DB, userPublicID)
+	userStats, err := app.models.Users.GetUserStats(userPublicID)
 	if err != nil {
 		log.Printf("Couldn't get user stats %v", err)
 		http.Error(w, "Couldn't get user stats", http.StatusInternalServerError)

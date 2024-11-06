@@ -1,13 +1,13 @@
-package handlers
+package main
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"productivity/server/models"
+	"productivity/server/internal/models"
 )
 
-func (h *Handler) GetTechnologiesHandler(w http.ResponseWriter, req *http.Request) {
+func (app *application) GetTechnologiesHandler(w http.ResponseWriter, req *http.Request) {
 	icons, err := models.FetchTechnologies()
 	if err != nil {
 		http.Error(w, "Failed to fetch technologies", http.StatusInternalServerError)
@@ -20,4 +20,3 @@ func (h *Handler) GetTechnologiesHandler(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}
 }
-

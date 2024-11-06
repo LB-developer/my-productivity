@@ -1,21 +1,19 @@
-package handlers
+package main
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"productivity/server/models"
 )
 
-func (h *Handler) GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
+func (app *application) GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	courses, err := models.GetCoursesByUserId(h.DB, userPublicID)
+	courses, err := app.models.Courses.GetCoursesByUserId(userPublicID)
 	if err != nil {
 		log.Printf("Could not fetch courses: %s\n %v", "courses", err)
 		http.Error(w, "Could not fetch courses", http.StatusInternalServerError)
@@ -31,14 +29,14 @@ func (h *Handler) GetCoursesByIdHandler(w http.ResponseWriter, req *http.Request
 	}
 }
 
-func (h *Handler) GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
+func (app *application) GetCoursesPreviewHandler(w http.ResponseWriter, req *http.Request) {
 	userPublicID := req.URL.Query().Get("publicUserId")
 	if userPublicID == "" {
 		http.Error(w, "Missing userId query", http.StatusBadRequest)
 		return
 	}
 
-	coursePreview, err := models.GetCoursesPreview(h.DB, userPublicID)
+	coursePreview, err := app.models.Courses.GetCoursesPreview(userPublicID)
 	if err != nil {
 		log.Printf("Couldn't fetch courses preview: \n%v", err)
 		http.Error(w, "Couldn't fetch courses preview", http.StatusInternalServerError)
