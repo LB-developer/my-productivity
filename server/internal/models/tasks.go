@@ -88,7 +88,7 @@ type Task struct {
 }
 
 func (t TaskModel) GetPriorityTasks(userPublicID string) ([]Task, error) {
-	userId, err := GetUserIdFromPublicId(t.t.DB, userPublicID)
+	userId, err := GetUserIdFromPublicId(t.DB, userPublicID)
 	if err != nil {
 		log.Printf("Users public id is not in the database")
 		return nil, err
@@ -291,16 +291,15 @@ func (t TaskModel) getFieldValue(field reflect.Value) interface{} {
 }
 
 // func (t TaskModel)tion to extract all field values from DefaultTask for database insertion
-func (t TaskModel) preparet.DBValues(task DefaultTask) []interface{} {
+func (t TaskModel) prepareDBValues(task DefaultTask) []interface{} {
 	v := reflect.ValueOf(task)
 
 	values := make([]interface{}, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
-		values[i] = getFieldValue(v.Field(i)) // Safely get the value or nil
+		values[i] = t.getFieldValue(v.Field(i)) // Safely get the value or nil
 	}
 	return values
 }
-
 
 func (t TaskModel) CreateNewTask(userPublicID string, defaultTask DefaultTask) (CreateTaskResponse, error) {
 	userId, err := GetUserIdFromPublicId(t.DB, userPublicID)
@@ -312,7 +311,7 @@ func (t TaskModel) CreateNewTask(userPublicID string, defaultTask DefaultTask) (
 	/*
 	  defaultTask values are all pointers to allow nullability.
 	  We cannot just dereference each value because dereferencing nil is not possible,
-	  so we pass the struct to preparet.DBValues which will return an interface of values either
+	  so we pass the struct to prepareDBValues which will return an interface of values either
 	  -- The dereferenced value
 	  -- nil
 
@@ -321,7 +320,7 @@ func (t TaskModel) CreateNewTask(userPublicID string, defaultTask DefaultTask) (
 	  1: ContextType
 	  2: ParentTaskID
 	*/
-	values := preparet.DBValues(defaultTask)
+	values := t.prepareDBValues(defaultTask)
 
 	query := `
 	INSERT INTO tasks (user_id, name, deadline, context_type, context_id, priority, parent_task_id) 
