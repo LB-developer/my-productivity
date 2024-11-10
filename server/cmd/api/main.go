@@ -38,6 +38,7 @@ func main() {
 		config: *cfg,
 		logger: logger,
 		db:     db,
+		models: models.NewModels(db),
 	}
 
 	err = app.serve(*cfg)
